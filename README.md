@@ -2,11 +2,13 @@
 
 A 2D puzzle-platformer and custom graphics engine implemented in C++ and OpenGL (`iGraphics`). Developed as the term project for **CSE-1200 (Software Development & Computer Graphics Lab)** at **Ahsanullah University of Science and Technology (AUST)**.
 
+> **Project Origin & Attribution**: This project is an academic recreation and technical study of the popular mobile puzzle-platformer **Tricky Castle** (originally created by Casual Azur Games). Developed from scratch in C++ without third-party game engines, the project reverse-engineers the original game's signature lateral-thinking puzzle mechanics while implementing a custom deterministic 60 FPS physics engine, procedural trigonometric animations, an expanded 4-chapter level progression, and original game modes.
+
 ---
 
 ## Project Summary
 
-Tricky Castle is an interactive puzzle-platformer centered on lateral problem solving and cognitive subversion. Players guide a knight through 24 medieval dungeon chambers across 4 chapters, navigating traps, dynamic obstacles, and puzzles designed to subvert conventional platforming assumptions (e.g., pushing locked doors directly, catching falling keys in mid-air, or manipulating HUD clue elements).
+Tricky Castle is an academic desktop recreation of the hit mobile game *Tricky Castle* by Casual Azur Games, developed to study the implementation of 2D puzzle-platformer mechanics from the ground up. Players guide a stout chibi knight through 24 medieval dungeon chambers across 4 chapters, navigating traps, dynamic obstacles, and puzzles designed to subvert conventional platforming assumptions—faithfully adapting iconic mechanics such as pushing locked doors directly, catching falling keys in mid-air, avoiding deceptive buttons, and manipulating HUD clue elements.
 
 The project was constructed from the ground up using raw C++ and the fixed-function OpenGL pipeline (`iGraphics` framework over GLUT/GLU). Game systems—including physics, swept collision detection, procedural deformation, lighting shaders, and state handling—were written without external game engines (such as Unity or Unreal) to develop direct competence in low-level systems programming and real-time graphics.
 
@@ -187,6 +189,13 @@ The complete academic artifacts prepared for the university project submission a
 - [Individual Presentation Scripts (HTML)](docs/Castle_Escape_Individual_Presentation_Scripts.html)
 - [Project Presentation Slide Deck (HTML)](docs/Castle_Escape_Presentation.html)
 - [Architecture & Team Work Distribution Spec (MODULES.md)](docs/MODULES.md)
+
+---
+
+## Attribution & Acknowledgments
+
+- **Original Game Concept**: This project is an academic recreation and technical study of **Tricky Castle**, originally created and published by **Casual Azur Games**. All adapted puzzle concepts, room tropes, and core thematic inspirations remain the intellectual property of their original creators.
+- **Academic Supervision**: Developed under the academic guidance of faculty members **Saha Reno** (Assistant Professor) and **Md. Zahid Hossain** (Lecturer), Department of Computer Science and Engineering, **Ahsanullah University of Science and Technology (AUST)**.
 
 ---
 
