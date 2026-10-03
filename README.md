@@ -1,162 +1,129 @@
-# 🏰 Castle Escape — Custom 2D Physics & Graphics Engine
+# Tricky Castle
 
-<div align="center">
-
-[![C++14](https://img.shields.io/badge/Language-C%2B%2B14%20%2F%20C-00599C?style=for-the-badge&logo=cplusplus)](demo/)
-[![OpenGL](https://img.shields.io/badge/Graphics-OpenGL%20%2F%20iGraphics-5586A4?style=for-the-badge&logo=opengl)](demo/)
-[![60 FPS](https://img.shields.io/badge/Physics-60%20FPS%20Locked-brightgreen?style=for-the-badge)](demo/GameLogic.h)
-[![Visual Studio](https://img.shields.io/badge/IDE-Visual%20Studio%202013--2022-5C2D91?style=for-the-badge&logo=visualstudio)](demo/TorchboundKeep.sln)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](LICENSE)
-[![Academic Distinction](https://img.shields.io/badge/AUST-Computer%20Graphics%20Lab-red?style=for-the-badge)](docs/)
-
-**An architecturally decoupled 2D puzzle-platformer featuring a deterministic 60 FPS Euler physics engine, dual-polarity gravity inversion, procedural trigonometric character deformations, and multi-pass alpha bloom glow shaders.**
-
-[Quick Overview](#-recruiter-quick-glance) • [Visual Showcase](#-visual-showcase) • [Core Engineering](#-core-engineering-highlights) • [Architecture](#-modular-system-architecture) • [Level Mechanics](#-puzzle-subversion--level-design) • [Build & Run](#-how-to-build--run) • [Contact](#-contact--connect)
-
-</div>
+A 2D puzzle-platformer and custom graphics engine implemented in C++ and OpenGL (`iGraphics`). Developed as the term project for **CSE-1200 (Software Development & Computer Graphics Lab)** at **Ahsanullah University of Science and Technology (AUST)**.
 
 ---
 
-## 📌 Recruiter Quick Glance
+## Project Summary
 
-> **"A university project built with commercial-grade systems architecture."**  
-> Developed as the signature Software Development & Computer Graphics term project at **Ahsanullah University of Science and Technology (AUST)**.
+Tricky Castle is an interactive puzzle-platformer centered on lateral problem solving and cognitive subversion. Players guide a knight through 24 medieval dungeon chambers across 4 chapters, navigating traps, dynamic obstacles, and puzzles designed to subvert conventional platforming assumptions (e.g., pushing locked doors directly, catching falling keys in mid-air, or manipulating HUD clue elements).
 
-| Metric / Dimension | Specification & Highlights |
+The project was constructed from the ground up using raw C++ and the fixed-function OpenGL pipeline (`iGraphics` framework over GLUT/GLU). Game systems—including physics, swept collision detection, procedural deformation, lighting shaders, and state handling—were written without external game engines (such as Unity or Unreal) to develop direct competence in low-level systems programming and real-time graphics.
+
+---
+
+## Technical Specifications
+
+| Parameter | Specification |
 |---|---|
-| **Lead Architect & Theorist** | **Ovijit Sharma** ([@OVIJIT0844J](https://github.com/OVIJIT0844J)) |
-| **Primary Domain** | **Game Theory, 60 FPS Physics Engine, Procedural Graphics & Animation Pipeline** |
-| **Personal Code Contribution** | **~3,800+ Lines of High-Performance C++** (`GameLogic.h`, `CharacterRender.h`, `RenderUtils.h`, `InputHandler.h`, `GameDefines.h`, `iMain.cpp`) |
-| **Core Technical Stack** | C++, C, OpenGL (GLUT / GLU / Glaux), Win32 API, Windows MCI Audio Engine |
-| **Simulation Fidelity** | Deterministic 60 FPS Euler integration, Swept AABB collision with 2px sub-pixel snap tolerance |
-| **Graphics Innovation** | 100% procedural trigonometric character animation (0 MB sprite bloat), multi-pass concentric alpha bloom |
-| **Content Depth** | 24 handcrafted puzzle floors, 4 castle chapters, 6 hero archetypes, CR7 vs Messi penalty derby mini-game |
-| **Academic Evaluation** | Submitted for **CSE-1200 / Computer Graphics Lab** under faculty supervision |
+| **Language** | C++14, C |
+| **Graphics API** | OpenGL 2.1 / Fixed-Function Pipeline (`iGraphics`, GLUT, GLU) |
+| **Platform** | Windows (Win32 API) |
+| **Audio Subsystem** | Windows MCI (`winmm.lib`, `mciSendString`) |
+| **Resolution** | 1024 × 640 @ 60 Hz |
+| **Simulation** | Deterministic 60 FPS fixed-timestep Euler integration |
+| **Collision Model** | Swept Axis-Aligned Bounding Box (AABB) with sub-pixel snapping |
+| **Level Content** | 24 puzzle floors across 4 thematic castle chapters |
+| **Architecture** | Decoupled modular design across 11 discrete header subsystems |
 
 ---
 
-## 📸 Visual Showcase
+## Engineering Overview & My Contributions
 
-### 1. Pseudo-3D World Select Carousel & Atmospheric Lighting
-*Features a cylindrical perspective projection with real-time card scaling, dark vignette shading, and concentric alpha bloom text rendering.*
+As the lead developer responsible for **Game Theory, Physics Simulation, Graphics Architecture, and Procedural Animation**, my personal contribution encompasses **~3,800+ lines of C++** across [`GameLogic.h`](demo/GameLogic.h), [`CharacterRender.h`](demo/CharacterRender.h), [`RenderUtils.h`](demo/RenderUtils.h), [`InputHandler.h`](demo/InputHandler.h), and [`GameDefines.h`](demo/GameDefines.h).
 
-<div align="center">
-  <img src="demo/GameSnaps/screen_world_select_7cards.png" alt="World Select Carousel" width="90%" style="border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.4);" />
-</div>
+### 1. Deterministic 60 FPS Physics Engine (`GameLogic.h`)
+The simulation loop runs on a fixed timestep ($\Delta t = 16.67\text{ ms}$) rather than variable frame delta time. This guarantees identical jump parabolas, velocity damping, and collision resolution regardless of underlying CPU speed.
 
-<br/>
+- **Euler Integration**: Computes horizontal velocity damping with friction coefficients ($0.82$ on ground, $0.94$ in air).
+- **Parabolic Jump & Terminal Clamp**: Implements variable-height jumps with vertical velocity clamped to $v_{\max} = 14.0\text{ px/frame}$.
+- **Swept AABB Collision Resolution**: Implements coordinate ray-sweeps and bounding-box checks with a 2px snap tolerance, resolving high-speed edge cases where fast-moving entities could tunnel through thin platform geometry or floor spikes.
+- **Inertial Platform Mechanics**: Dynamically transfers momentum from moving stone platforms to the player entity.
 
-### 2. High-Fidelity Gameplay, Traps & Mechanics
-*Engineered with interactive ceiling pull-chains, dynamic drawbridges, particle torch fire, and lethal spike hazards.*
+### 2. Dual-Gravity Polarity Inversion
+Certain puzzle floors (such as Floor 7: *Upside Down*) flip the world gravity vector:
 
-| Authentic Puzzle Room (Floor 13) | Chapter 4 Dragon's Keep Map |
+$$\vec{g} = \pm 0.85 \hat{j}$$
+
+- **Sensor Re-indexing**: Flips ground-checking sensors and ceiling head-bump raycasts dynamically between bottom and top boundaries.
+- **Coordinate Matrix Inversion**: Transforms sprite vertices along the horizontal axis seamlessly, preventing coordinate clipping or phase-through bugs while maintaining intuitive left/right controller orientation.
+
+### 3. Procedural Trigonometric Animation (`CharacterRender.h`)
+To eliminate the memory footprint and asset pipeline overhead of multi-megabyte sprite sheets, all character deformations and animation states are evaluated analytically in real time:
+
+- **Idle Breathing**: Sinusoidal chest scaling when stationary:
+  $$\text{scale}_y = 1.0 + \sin(\omega t) \times 0.028, \quad \text{scale}_x = 1.0 - (\text{scale}_y - 1.0) \times 0.35$$
+- **Stride Bobbing & Dynamic Tilt**: Stride oscillation modeled via $|\sin(\text{walkCycle} \times 0.20)| \times 4.0\text{ px}$ with forward body tilt ($\pm 5.5^\circ$) in the direction of velocity.
+- **Squash and Stretch**: Dynamic deformation on jump liftoff ($\text{scale}_x = 0.90, \text{scale}_y = 1.12$) and landing impact ($\text{scale}_x = 1.18, \text{scale}_y = 0.82$) with exponential restoration decay.
+- **Dynamic Occlusion Shadow**: Casts an elliptical ground shadow beneath the player whose radius and alpha scale inversely with elevation above the floor.
+
+### 4. Custom 2D Lighting, Bloom & Vignette Shaders (`RenderUtils.h`)
+Implemented hardware-accelerated visual styling on legacy OpenGL without requiring programmable GLSL shaders:
+
+- **Multi-Pass Concentric Alpha Bloom (`drawGlowingText`)**: Simulates HDR glow on text and UI elements by issuing multi-pass draw calls at concentric offsets with decaying alpha blends (`GL_SRC_ALPHA`, `GL_ONE_MINUS_SRC_ALPHA`).
+- **Radial Dark Vignette**: Procedural vignette overlays darkening screen perimeters to focus attention on the active puzzle stage.
+- **Particle System**: A 280-particle pool with continuous recycling, simulating ambient torch embers, dust kicks, and reward sparkle bursts with pseudo-random velocity perturbations.
+
+### 5. Finite State Machine & Controller Dispatcher (`GameDefines.h`, `InputHandler.h`)
+- Designed the central 14-state game machine governing transitions across Intro, World Selection, Chapter Maps, In-Game Rooms, Pause Dialogs, Level Clear screens, and the Penalty Derby mini-game.
+- Unified input architecture dispatching keyboard navigation, mouse hover/click interaction with environmental triggers (chains, levers, switches), and on-screen touch control buttons.
+
+---
+
+## Gameplay & Screenshots
+
+### 1. World Selection & Visual Atmosphere
+Pseudo-3D cylindrical carousel supporting real-time card depth scaling, vignette borders, and alpha-blended text.
+
+![World Select Carousel](demo/GameSnaps/screen_world_select_7cards.png)
+
+### 2. Puzzle Chambers & Environmental Mechanics
+Interactive drawbridges, ceiling pull-chains, dynamic torches, and spike pit hazards across castle floors.
+
+| Floor 13: Drawbridge & Torch Lighting | Chapter 4: Dragon's Keep Map Grid |
 |:---:|:---:|
-| <img src="demo/GameSnaps/screen_floor13_bridge_extended.png" width="480" alt="Floor 13 Gameplay" /> | <img src="demo/GameSnaps/screen_ch4_select.png" width="480" alt="Chapter 4 Select" /> |
-| *Drawbridge extension, dynamic torch particles & chains* | *12-node level selection grid with star ratings & progress tracking* |
+| ![Floor 13](demo/GameSnaps/screen_floor13_bridge_extended.png) | ![Chapter 4 Select](demo/GameSnaps/screen_ch4_select.png) |
 
-| Standalone Penalty Derby (CR7 vs Messi) | Iconic SIUUU Celebration Sequence |
+### 3. Integrated Penalty Derby Mini-Game
+Integrated football shootout mode featuring crosshair aiming, power gauge charging, 3D parabolic ball flight, goalkeeper AI, and animated celebration sequence.
+
+| Crosshair Aiming & Depth Trajectory | Goal Celebration |
 |:---:|:---:|
-| <img src="demo/GameSnaps/penalty_aim_cr7_back.png" width="480" alt="Penalty Derby Aiming" /> | <img src="demo/GameSnaps/penalty_goal_siuuu.png" width="480" alt="SIUUU Celebration" /> |
-| *Crosshair aiming, power gauge charging & 3D ball trajectory* | *Custom animated celebration cutscene with crowd cheers & SIU audio* |
+| ![Penalty Aim](demo/GameSnaps/penalty_aim_cr7_back.png) | ![Goal Celebration](demo/GameSnaps/penalty_goal_siuuu.png) |
 
 ---
 
-## ⚡ Core Engineering Highlights
+## System Architecture
 
-### 1. Deterministic 60 FPS Physics Simulation (`GameLogic.h`)
-The game engine bypasses unconstrained frame delta timing in favor of a **fixed 60 FPS physics update loop** ($\Delta t = 16.67\text{ ms}$), guaranteeing identical jump trajectories and collision resolutions across diverse hardware configurations.
-
-```cpp
-// Excerpt from demo/GameLogic.h - Fixed Euler Physics Integration
-void fixedUpdate()
-{
-    // Apply horizontal friction & ground resistance
-    if (onGround) {
-        velocityX *= 0.82f;
-    } else {
-        velocityX *= 0.94f; // Air resistance damping
-    }
-
-    // Parabolic gravity integration with terminal velocity clamp
-    if (!onGround) {
-        velocityY += gravityDirection * GRAVITY_ACCEL; // +/- 0.85 px/frame^2
-        if (abs(velocityY) > TERMINAL_VELOCITY) {
-            velocityY = (velocityY > 0) ? TERMINAL_VELOCITY : -TERMINAL_VELOCITY;
-        }
-    }
-
-    // Swept AABB Collision Resolution with 2px Snap Tolerance
-    resolvePlayerTileCollisions(playerX + velocityX, playerY + velocityY);
-}
-```
-
-- **Swept AABB Collision Detection**: Sub-pixel axis-aligned bounding box routines prevent high-velocity tunneling through thin floor plates or spike borders.
-- **Inertial Platform Transfer**: Moving stone elevators transfer momentum directly to the player character during lift off.
-
----
-
-### 2. Dual-Gravitational Polarity Inversion Tensor
-Inverted gravity puzzle rooms (such as *Upside Down*) reverse the world gravity vector ($\vec{g} = -g \hat{j}$).
-
-- **Sensor Inversion**: Player raycasts and ground detection switches dynamically from bottom feet to ceiling head sensors.
-- **Coordinate Transformation**: Visual rendering matrices seamlessly invert character sprite vertices along the horizontal axis without causing coordinate snapping or phase-through bugs.
-
----
-
-### 3. 100% Procedural Trigonometric Animation Engine (`CharacterRender.h`)
-Instead of bundling megabytes of static sprite-sheet textures, Ovijit Sharma engineered a **real-time trigonometric mathematical deformation pipeline**:
-
-$$\text{IdleBreathing}(t) = \sin(\omega t) \times 0.028$$
-
-$$\Delta y_{\text{stride}} = \left| \sin(\text{walkCycle} \times 0.20) \right| \times 4.0\text{ px}$$
-
-- **Idle Breathing Cadence**: Sinusoidal chest dilation and contraction simulates lifelike breathing when standing still.
-- **Dynamic Stride Bobbing**: Trigonometric hip-displacement algorithms produce fluid vertical bounce and forward body tilt ($\pm 5.5^\circ$) based on movement direction.
-- **Squash & Stretch Deformations**: Jump takeoff elongates the character along the vertical axis ($\text{scaleY} = 1.12, \text{scaleX} = 0.90$), while landing abruptly triggers an elastic squash ($\text{scaleX} = 1.18, \text{scaleY} = 0.82$) with exponential recovery decay.
-- **Dynamic Ground Shadow Projection**: Casts an elliptical ambient occlusion shadow whose width and alpha decay exponentially as the player ascends in the air.
-
----
-
-### 4. Custom 2D Vector Lighting & Alpha Bloom Shaders (`RenderUtils.h`)
-Built directly on fixed-function legacy OpenGL, this module simulates modern HDR post-processing effects without requiring GLSL shaders:
-
-- **Multi-Pass Concentric Alpha Bloom (`drawGlowingText`)**: Renders text with concentric, expanding radii at exponentially decaying alpha intensities to create a radiant neon glow effect.
-- **Radial Dark Vignette Shading**: Procedural alpha-graded perimeter overlays draw the player's focus toward the center of the dungeon chamber.
-- **Ambient Particle Simulation**: 280-particle active pool simulating flickering torch fire, rising ember sparks, and golden victory bursts with random velocity drift.
-
----
-
-## 🏛️ Modular System Architecture
-
-The codebase adheres to strict separation of concerns, decoupling the presentation layer from the deterministic simulation state:
+The codebase follows a modular structure decoupling state simulation, input handling, and rendering pipelines:
 
 ```mermaid
 graph TD
-    subgraph Core Physics & Theory [Lead: Ovijit Sharma]
-        GD[GameDefines.h<br/>• Game Theory & State Machine<br/>• 14 States & Hero Archetypes]
-        RU[RenderUtils.h<br/>• Aesthetics, Vignette & Glow<br/>• Ambient Particle Systems]
-        CR[CharacterRender.h<br/>• Procedural Chibi Deformations<br/>• Squash, Stretch & Strides]
-        GL[GameLogic.h<br/>• 60 FPS Deterministic Physics<br/>• Swept AABB & Dual-Gravity]
-        IH[InputHandler.h<br/>• Mouse Dispatch & Controller<br/>• Virtual Touch Buttons]
+    subgraph Core Physics & Theory [Ovijit Sharma]
+        GD[GameDefines.h - 14-State FSM & Constants]
+        RU[RenderUtils.h - Bloom, Vignette & Particles]
+        CR[CharacterRender.h - Procedural Deformation]
+        GL[GameLogic.h - 60 FPS Physics & Swept AABB]
+        IH[InputHandler.h - Multi-Input Event Dispatcher]
     end
 
     subgraph Systems & Persistence [Maheed Abrar]
-        AS[AudioSystem.h<br/>• MCI Streamer & Sound FX]
-        SS[SaveSystem.h<br/>• Atomic Binary File I/O]
-        PG[PenaltyGame.h<br/>• 3D Trajectory Derby Mini-Game]
+        AS[AudioSystem.h - MCI Audio Streaming]
+        SS[SaveSystem.h - Binary Serialization]
+        PG[PenaltyGame.h - 3D Penalty Shootout]
     end
 
     subgraph World & Level Design [Shahriar Rythm]
-        WO[WorldObjects.h<br/>• 3D Buttons, Traps & Props]
-        LV[Levels.h<br/>• 24-Floor Puzzle Database]
+        WO[WorldObjects.h - Traps, Chains & Triggers]
+        LV[Levels.h - 24-Floor Puzzle Catalog]
     end
 
-    subgraph UI & Experience [Nabeel Saad Borno]
-        MS[MenuScreens.h<br/>• 3D Carousel & Chapter Maps]
+    subgraph UI & Menus [Nabeel Saad Borno]
+        MS[MenuScreens.h - World Carousel & Level Grids]
     end
 
-    subgraph Engine Bootstrap [Integrated Core]
-        MAIN[iMain.cpp<br/>• Win32 Message Loop & Render Cycle]
+    subgraph Bootstrap
+        MAIN[iMain.cpp - Entry Point & Window Loop]
     end
 
     GD --> AS & SS & RU
@@ -173,141 +140,56 @@ graph TD
     WO --> MAIN
 ```
 
-### Team Work Breakdown & Authorship Attribution
+### Module Responsibilities & Team Work Distribution
 
-| Contributor | Domain / Role | Assigned Modules | Personal Scope | Key Engineering Deliverables |
-|---|---|---|:---:|---|
-| **Ovijit Sharma**<br/>`00725105101134` | **Lead Game Theorist, Graphics Architect & Physics Engine Lead** | [`CharacterRender.h`](demo/CharacterRender.h)<br/>[`RenderUtils.h`](demo/RenderUtils.h)<br/>[`GameLogic.h`](demo/GameLogic.h)<br/>[`InputHandler.h`](demo/InputHandler.h)<br/>[`GameDefines.h`](demo/GameDefines.h)<br/>[`iMain.cpp`](demo/iMain.cpp) | **~3,800+ Lines** | • 60 FPS deterministic Euler physics and swept AABB collision<br/>• Dual-gravity polarity inversion system (+g / -g)<br/>• 100% procedural trigonometric character animation engine<br/>• Multi-pass concentric alpha bloom and vignette shaders<br/>• Central 14-state game FSM and multi-input controller |
-| **Maheed Abrar**<br/>`00725105101140` | **Systems Architect & Mini-Game Lead** | [`PenaltyGame.h`](demo/PenaltyGame.h)<br/>[`SaveSystem.h`](demo/SaveSystem.h)<br/>[`AudioSystem.h`](demo/AudioSystem.h) | **2,434 Lines** | • Penalty Derby mini-game with 3D parabolic ball flight<br/>• Messi goalkeeper AI and SIUUU celebration sequence<br/>• Atomic binary save/load persistence (`tricky_castle_save.dat`)<br/>• MCI audio subsystem streaming |
-| **Nabeel Saad Borno**<br/>`00725105101135` | **UI & Score Systems Developer** | [`MenuScreens.h`](demo/MenuScreens.h)<br/>[`RenderUtils.h`](demo/RenderUtils.h) *(UI)* | **1,362 Lines** | • Pseudo-3D cylindrical World Select Carousel<br/>• 6-hero Costume Selection modal and Chapter Map grids<br/>• Star-rating calculation and animated toast alerts |
-| **Shahriar Rythm**<br/>`00725105101132` | **Level Designer & Dungeon Architect** | [`Levels.h`](demo/Levels.h)<br/>[`WorldObjects.h`](demo/WorldObjects.h) | **1,127 Lines** | • 24 puzzle floors across Chapters 1 through 4<br/>• 3D mechanical red buttons, ceiling chains, and drawbridges<br/>• In-game hint generation and room spawning engine |
-
----
-
-## 🧩 Puzzle Subversion & Level Design
-
-Castle Escape rejects formulaic platforming in favor of cognitive subversion:
-
-1. **"Use Force — Not Key" (Floor 4)**: The room contains no golden key. Players must push directly against the locked heavy dungeon door with sheer brute force to slide it into the masonry.
-2. **"Don't Let It Press The Button" (Floor 5)**: The golden key falls from the high ceiling directly toward a lethal red floor trigger. The player must sprint and catch the key in mid-air.
-3. **"The Button Is A Lie" (Floor 9)**: A giant tempting red button triggers an instant ceiling crusher. The path to victory requires leaping over the button entirely.
-4. **"Think Outside The Box" (Floor 12)**: The key is not placed in the game world—it is physically embedded inside the top UI clue banner! Jumping into the HUD dislodges the key into the chamber.
-5. **"The Angry Sentry" (Floor 10)**: Rushing the armored guard triggers a shield bash; remaining peacefully stationary allows the guard to fall asleep and lower his gate.
+| Member | Student ID | Domain | Assigned Files | Scope | Primary Deliverables |
+|---|---|---|---|:---:|---|
+| **Ovijit Sharma** | `00725105101134` | **Physics Engine, Graphics Architecture, Procedural Animation & Game Theory** | [`CharacterRender.h`](demo/CharacterRender.h)<br/>[`RenderUtils.h`](demo/RenderUtils.h)<br/>[`GameLogic.h`](demo/GameLogic.h)<br/>[`InputHandler.h`](demo/InputHandler.h)<br/>[`GameDefines.h`](demo/GameDefines.h)<br/>[`iMain.cpp`](demo/iMain.cpp) | **~3,800+ lines** | 60 FPS Euler physics, swept AABB collision resolution, dual-gravity inversion tensor, procedural trigonometric animation pipeline, multi-pass concentric alpha bloom, dark vignette shading, and 14-state game FSM. |
+| **Maheed Abrar** | `00725105101140` | **Systems & Mini-Game Development** | [`PenaltyGame.h`](demo/PenaltyGame.h)<br/>[`SaveSystem.h`](demo/SaveSystem.h)<br/>[`AudioSystem.h`](demo/AudioSystem.h) | **2,434 lines** | Standalone penalty shootout mode with 3D ball trajectory, goalkeeper AI, atomic binary serialization (`tricky_castle_save.dat`), and Windows MCI audio integration. |
+| **Nabeel Saad Borno** | `00725105101135` | **User Interface & Score Management** | [`MenuScreens.h`](demo/MenuScreens.h)<br/>[`RenderUtils.h`](demo/RenderUtils.h) *(UI)* | **1,362 lines** | Cylindrical 3D world carousel, chapter map grids, character costume selection modal, star-rating evaluation, and animated toast alerts. |
+| **Shahriar Rythm** | `00725105101132` | **Level Design & Dungeon Props** | [`Levels.h`](demo/Levels.h)<br/>[`WorldObjects.h`](demo/WorldObjects.h) | **1,127 lines** | 24 puzzle floors across Chapters 1-4, mechanical 3D button depress mechanics, interactive ceiling chains, levers, drawbridges, and hint solver. |
 
 ---
 
-## 🎮 Playable Hero Archetypes
+## Build and Execution
 
-| Hero | Special Perks & Engineering Attributes |
-|:---:|---|
-| **Sir William** | Balanced default knight; steel armor, red crest plume, high stability. |
-| **CR7** | +20% sprint acceleration, signature white/gold boots, unlocks Penalty Derby bonus score. |
-| **Neymar Jr** | Hyper-agile jump height, sambista dribble stride, reduced landing squash delay. |
-| **Elena** | Frost Ranger; generates ice particle trails, impervious to floor friction slip. |
-| **Thorgar** | Heavy berserker; immune to minor spike damage, heavy landing screen-shake. |
-| **RenoSir (Collab)** | Exclusive honorary faculty character; instant hint resolution and aura particles. |
-
----
-
-## 💻 How to Build & Run
-
-### System Requirements
-- **OS**: Windows 7 / 8 / 10 / 11 (32-bit or 64-bit)
-- **Toolchain**: Microsoft Visual Studio (2013, 2015, 2017, 2019, 2022) with C++ Desktop Workload
-- **Graphics**: OpenGL 2.1 compatible GPU
+### Requirements
+- **Operating System**: Windows 7 / 8 / 10 / 11 (32-bit or 64-bit)
+- **Compiler / Toolchain**: Microsoft Visual Studio (2013, 2015, 2017, 2019, 2022) with the C++ Desktop Development workload
+- **Graphics Hardware**: OpenGL 2.1 compatible GPU
 
 ### Compilation Steps
-1. **Clone the Repository**:
+1. Clone the repository:
    ```bash
    git clone https://github.com/OVIJIT0844J/TrickyCastle.git
    cd TrickyCastle
    ```
-2. **Open Visual Studio Solution**:
-   - Double-click `demo/TorchboundKeep.sln` (or `demo/demo.sln`).
-3. **Configure Build Settings**:
-   - Set Configuration to **Debug** or **Release**.
-   - Set Platform to **Win32** (x86).
-4. **Compile & Run**:
-   - Press **F5** (or **Ctrl + F5**) to build and launch immediately.
-   - *All required OpenGL libraries (`GLUT32.DLL`, `glut32.lib`, `glaux.lib`) are pre-configured in `demo/`.*
+2. Open `demo/TorchboundKeep.sln` (or `demo/demo.sln`) in Visual Studio.
+3. Set the build configuration to **Debug** or **Release**, with platform targeted to **Win32** (x86).
+4. Press **F5** (or **Ctrl + F5**) to compile and launch.
+   - *All required OpenGL libraries (`GLUT32.DLL`, `glut32.lib`, `GLU32.LIB`, `glaux.lib`) are bundled in `demo/`.*
 
-### In-Game Keyboard & Mouse Controls
-| Key / Input | Action / Function |
-|---|---|
-| **A / D** or **← / →** | Move Hero Left / Right |
-| **SPACE** / **W** / **↑** | Jump (variable height based on hold duration) |
-| **E** / **Click** | Pull ceiling chains, press buttons, pull levers |
-| **R** | Instant retry current room |
-| **H** | Reveal room riddle hint |
-| **M** | Toggle background music |
-| **ESC** | Pause / Return to Level Select / Main Menu |
+### In-Game Controls
+- **A / D** or **Left / Right Arrow**: Move character horizontally
+- **Space / W / Up Arrow**: Jump (variable height based on hold duration)
+- **E / Left Click**: Interact with environmental triggers (chains, buttons, levers)
+- **R**: Restart current puzzle room
+- **H**: Reveal riddle clue
+- **M**: Toggle background audio
+- **Esc**: Pause / Return to Level Select / Main Menu
 
 ---
 
-## 📂 Repository File Structure
+## Academic Documentation
 
-```
-TrickyCastle/
-├── README.md                                  # Executive recruiter presentation & technical showcase
-├── LICENSE                                    # Open-source MIT License
-├── .gitignore                                 # Professional VS / C++ / asset exclusion rules
-│
-├── docs/                                      # Academic reports, architecture specs & presentations
-│   ├── MODULES.md                             # Detailed team division & lines-of-code breakdown
-│   ├── Castle_Escape_Project_Final_Report.pdf # Official 6-page AUST academic project report
-│   ├── Castle_Escape_Presentation.pptx        # Final project presentation slide deck
-│   └── Castle_Escape_Individual_Presentation_Scripts.html
-│
-└── demo/                                      # Game engine source code & runtime assets
-    ├── TorchboundKeep.sln                     # Visual Studio 2013+ Solution
-    ├── TorchboundKeep.vcxproj                 # C++ project configuration & dependency flags
-    ├── iMain.cpp                              # Core entry point, Win32 loop & render timer
-    │
-    ├── GameDefines.h                          # [Ovijit Sharma] FSM states & hero archetypes
-    ├── GameLogic.h                            # [Ovijit Sharma] 60 FPS physics & swept AABB
-    ├── CharacterRender.h                      # [Ovijit Sharma] Procedural trigonometric animations
-    ├── RenderUtils.h                          # [Ovijit Sharma] Multi-pass alpha bloom & vignette
-    ├── InputHandler.h                         # [Ovijit Sharma] Controller & mouse event dispatch
-    │
-    ├── PenaltyGame.h                          # [Maheed Abrar] CR7 vs Messi shootout mini-game
-    ├── SaveSystem.h                           # [Maheed Abrar] Atomic binary serialization
-    ├── AudioSystem.h                          # [Maheed Abrar] MCI audio streaming engine
-    ├── Levels.h                               # [Shahriar Rythm] 24-floor puzzle catalog
-    ├── WorldObjects.h                         # [Shahriar Rythm] Interactive dungeon props & traps
-    ├── MenuScreens.h                          # [Nabeel Saad Borno] 3D Carousel & UI screens
-    │
-    ├── iGraphics.h, glut.h, glaux.h           # OpenGL framework wrappers
-    ├── GLUT32.DLL                             # Runtime dynamic link library
-    ├── Images/                                # Textures, backgrounds & character sprites
-    ├── Audios/                                # Sound effects & background medieval tracks
-    └── GameSnaps/                             # High-resolution gameplay & UI captures
-```
+The complete academic artifacts prepared for the university project submission are archived in the [`docs/`](docs/) directory:
+- [Project Final Report (PDF)](docs/Castle_Escape_Project_Final_Report.pdf)
+- [Individual Presentation Scripts (HTML)](docs/Castle_Escape_Individual_Presentation_Scripts.html)
+- [Project Presentation Slide Deck (HTML)](docs/Castle_Escape_Presentation.html)
+- [Architecture & Team Work Distribution Spec (MODULES.md)](docs/MODULES.md)
 
 ---
 
-## 📄 Academic Project Reports & Slides
+## License
 
-The complete documentation produced for the formal university evaluation is accessible in the [`docs/`](docs/) directory:
-- 📑 [**Official Project Final Report (PDF)**](docs/Castle_Escape_Project_Final_Report.pdf)
-- 📊 [**Project Presentation Deck (PPTX)**](docs/Castle_Escape_Presentation.pptx)
-- 🎙️ [**Individual Defense Scripts (HTML)**](docs/Castle_Escape_Individual_Presentation_Scripts.html)
-- 🏛️ [**Modular Architecture & Team Attribution (MODULES.md)**](docs/MODULES.md)
-
----
-
-## 📬 Contact & Connect
-
-**Ovijit Sharma**  
-*Lead Game Theorist, Graphics Architect & Software Engineering Student*  
-Department of Computer Science and Engineering  
-**Ahsanullah University of Science and Technology (AUST)**  
-
-- 🐙 **GitHub**: [@OVIJIT0844J](https://github.com/OVIJIT0844J)
-- 📧 **Email**: [ovijitsharma.bangladesh@gmail.com](mailto:ovijitsharma.bangladesh@gmail.com)
-- 💼 **LinkedIn**: [Connect with Ovijit](https://www.linkedin.com/)
-
----
-
-<div align="center">
-  <sub>Engineered with passion in C++ & OpenGL. If you find this engine inspiring, please consider giving it a ⭐!</sub>
-</div>
+This project is licensed under the [MIT License](LICENSE).
