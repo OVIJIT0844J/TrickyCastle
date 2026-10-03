@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Header Files\1. Game Theory, Graphics &amp; Physics [Ovijit Sharma]">
+      <UniqueIdentifier>{E02888D1-9876-41B0-9A1D-30D03CD73B01}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\2. Core Systems, Audio, Save &amp; Mini-Game [Maheed Abrar]">
+      <UniqueIdentifier>{E02888D1-9876-41B0-9A1D-30D03CD73B02}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\3. Level Design, Traps &amp; Dungeon World [Shahriar Rythm]">
+      <UniqueIdentifier>{E02888D1-9876-41B0-9A1D-30D03CD73B03}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\4. UI, Menus &amp; Score System [Nabeel Saad Borno]">
+      <UniqueIdentifier>{E02888D1-9876-41B0-9A1D-30D03CD73B04}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\5. Third-Party &amp; Framework">
+      <UniqueIdentifier>{E02888D1-9876-41B0-9A1D-30D03CD73B05}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="iMain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <!-- 1. Game Theory, Graphics & Physics [Ovijit Sharma - 00725105101134] -->
+    <ClInclude Include="CharacterRender.h">
+      <Filter>Header Files\1. Game Theory, Graphics &amp; Physics [Ovijit Sharma]</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderUtils.h">
+      <Filter>Header Files\1. Game Theory, Graphics &amp; Physics [Ovijit Sharma]</Filter>
+    </ClInclude>
+    <ClInclude Include="GameLogic.h">
+      <Filter>Header Files\1. Game Theory, Graphics &amp; Physics [Ovijit Sharma]</Filter>
+    </ClInclude>
+    <ClInclude Include="InputHandler.h">
+      <Filter>Header Files\1. Game Theory, Graphics &amp; Physics [Ovijit Sharma]</Filter>
+    </ClInclude>
+
+    <!-- 2. Core Systems, Audio, Save & Mini-Game [Maheed Abrar - 00725105101140] -->
+    <ClInclude Include="GameDefines.h">
+      <Filter>Header Files\2. Core Systems, Audio, Save &amp; Mini-Game [Maheed Abrar]</Filter>
+    </ClInclude>
+    <ClInclude Include="AudioSystem.h">
+      <Filter>Header Files\2. Core Systems, Audio, Save &amp; Mini-Game [Maheed Abrar]</Filter>
+    </ClInclude>
+    <ClInclude Include="SaveSystem.h">
+      <Filter>Header Files\2. Core Systems, Audio, Save &amp; Mini-Game [Maheed Abrar]</Filter>
+    </ClInclude>
+    <ClInclude Include="PenaltyGame.h">
+      <Filter>Header Files\2. Core Systems, Audio, Save &amp; Mini-Game [Maheed Abrar]</Filter>
+    </ClInclude>
+
+    <!-- 3. Level Design, Traps & Dungeon World [Shahriar Rythm - 00725105101132] -->
+    <ClInclude Include="WorldObjects.h">
+      <Filter>Header Files\3. Level Design, Traps &amp; Dungeon World [Shahriar Rythm]</Filter>
+    </ClInclude>
+    <ClInclude Include="Levels.h">
+      <Filter>Header Files\3. Level Design, Traps &amp; Dungeon World [Shahriar Rythm]</Filter>
+    </ClInclude>
+
+    <!-- 4. UI, Menus & Score System [Nabeel Saad Borno - 00725105101135] -->
+    <ClInclude Include="MenuScreens.h">
+      <Filter>Header Files\4. UI, Menus &amp; Score System [Nabeel Saad Borno]</Filter>
+    </ClInclude>
+
+    <!-- 5. Third-Party & Framework -->
+    <ClInclude Include="iGraphics.h">
+      <Filter>Header Files\5. Third-Party &amp; Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="glut.h">
+      <Filter>Header Files\5. Third-Party &amp; Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="glaux.h">
+      <Filter>Header Files\5. Third-Party &amp; Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="stb_image.h">
+      <Filter>Header Files\5. Third-Party &amp; Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="bitmap_loader.h">
+      <Filter>Header Files\5. Third-Party &amp; Framework</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

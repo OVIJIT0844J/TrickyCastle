@@ -1,0 +1,3133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Castle Escape - 2D Puzzle Adventure Game Using iGraphics | Presentation</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&family=Cinzel+Decorative:wght@700;900&family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    /* ==========================================================================
+       CASTLE ESCAPE - DARK THEME AESTHETICS & DESIGN SYSTEM
+       ========================================================================== */
+    :root {
+      --bg-primary: #05070d;
+      --bg-secondary: #0c1220;
+      --bg-card: rgba(15, 23, 42, 0.78);
+      --bg-card-hover: rgba(22, 33, 58, 0.88);
+      --bg-card-border: rgba(148, 163, 184, 0.16);
+      --bg-card-border-glow: rgba(245, 158, 11, 0.45);
+      
+      --accent-gold: #f59e0b;
+      --accent-amber: #fbbf24;
+      --accent-flame: #ea580c;
+      --accent-crimson: #ef4444;
+      --accent-cyan: #38bdf8;
+      --accent-emerald: #10b981;
+      --accent-purple: #a855f7;
+      
+      --text-primary: #f8fafc;
+      --text-secondary: #cbd5e1;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+      
+      --font-display: 'Cinzel', serif;
+      --font-decorative: 'Cinzel Decorative', serif;
+      --font-body: 'Outfit', 'Inter', sans-serif;
+      --font-code: 'JetBrains Mono', monospace;
+      
+      --speaker-ovi: #f59e0b;
+      --speaker-rythm: #10b981;
+      --speaker-nabeel: #a855f7;
+      --speaker-maheed: #38bdf8;
+      
+      --radius-sm: 8px;
+      --radius-md: 14px;
+      --radius-lg: 20px;
+      --radius-full: 9999px;
+      
+      --shadow-subtle: 0 4px 20px rgba(0, 0, 0, 0.45);
+      --shadow-glow-gold: 0 0 35px rgba(245, 158, 11, 0.25);
+      --shadow-glow-cyan: 0 0 35px rgba(56, 189, 248, 0.25);
+      --shadow-glow-crimson: 0 0 35px rgba(239, 68, 68, 0.28);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-user-select: none;
+      user-select: none;
+    }
+
+    body {
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      font-family: var(--font-body);
+      overflow: hidden;
+      width: 100vw;
+      height: 100vh;
+      position: relative;
+    }
+
+    /* Ambient Ember Canvas */
+    #ember-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+      opacity: 0.65;
+    }
+
+    /* Presentation Viewport */
+    .deck-viewport {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 2;
+      overflow: hidden;
+    }
+
+    .slide {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      padding: 30px 48px 90px 48px;
+      display: flex;
+      flex-direction: column;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(20px) scale(0.985);
+      transition: opacity 0.45s cubic-bezier(0.16, 1, 0.3, 1), transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+      overflow-y: auto;
+    }
+
+    .slide.active {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateY(0) scale(1);
+    }
+
+    /* Scrollbar for slide content */
+    .slide::-webkit-scrollbar {
+      width: 6px;
+    }
+    .slide::-webkit-scrollbar-thumb {
+      background: rgba(148, 163, 184, 0.25);
+      border-radius: 4px;
+    }
+
+    /* ==========================================================================
+       SLIDE HEADER & BADGES
+       ========================================================================== */
+    .slide-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 22px;
+      border-bottom: 1px solid rgba(148, 163, 184, 0.12);
+      padding-bottom: 14px;
+      position: relative;
+    }
+
+    .slide-title-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .slide-eyebrow {
+      font-size: 0.82rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .slide-title {
+      font-family: var(--font-display);
+      font-size: 2.15rem;
+      font-weight: 800;
+      color: #fff;
+      letter-spacing: 0.5px;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.8);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .slide-subtitle {
+      font-size: 1rem;
+      color: var(--text-secondary);
+      font-weight: 400;
+    }
+
+    .slide-meta-tags {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .speaker-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      border-radius: var(--radius-full);
+      font-size: 0.85rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid;
+      backdrop-filter: blur(8px);
+    }
+    .speaker-pill.ovi {
+      color: var(--speaker-ovi);
+      border-color: rgba(245, 158, 11, 0.4);
+      box-shadow: 0 0 15px rgba(245, 158, 11, 0.15);
+    }
+    .speaker-pill.rythm {
+      color: var(--speaker-rythm);
+      border-color: rgba(16, 185, 129, 0.4);
+      box-shadow: 0 0 15px rgba(16, 185, 129, 0.15);
+    }
+    .speaker-pill.nabeel {
+      color: var(--speaker-nabeel);
+      border-color: rgba(168, 85, 247, 0.4);
+      box-shadow: 0 0 15px rgba(168, 85, 247, 0.15);
+    }
+    .speaker-pill.maheed {
+      color: var(--speaker-maheed);
+      border-color: rgba(56, 189, 248, 0.4);
+      box-shadow: 0 0 15px rgba(56, 189, 248, 0.15);
+    }
+
+    .header-badge {
+      padding: 5px 12px;
+      border-radius: var(--radius-sm);
+      font-family: var(--font-code);
+      font-size: 0.82rem;
+      font-weight: 600;
+      background: rgba(30, 41, 59, 0.7);
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      color: var(--text-secondary);
+    }
+
+    /* ==========================================================================
+       SLIDE CONTENT LAYOUTS
+       ========================================================================== */
+    .slide-body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .grid-2col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      align-items: stretch;
+      flex: 1;
+    }
+
+    .grid-3col {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      align-items: stretch;
+      flex: 1;
+    }
+
+    .grid-4col {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      align-items: stretch;
+      flex: 1;
+    }
+
+    .grid-60-40 {
+      display: grid;
+      grid-template-columns: 1.35fr 1fr;
+      gap: 24px;
+      align-items: stretch;
+      flex: 1;
+    }
+
+    .grid-40-60 {
+      display: grid;
+      grid-template-columns: 1fr 1.35fr;
+      gap: 24px;
+      align-items: stretch;
+      flex: 1;
+    }
+
+    /* ==========================================================================
+       GLASS CARDS & PANELS
+       ========================================================================== */
+    .glass-card {
+      background: var(--bg-card);
+      border: 1px solid var(--bg-card-border);
+      border-radius: var(--radius-md);
+      padding: 22px;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      backdrop-filter: blur(12px);
+      box-shadow: var(--shadow-subtle);
+      transition: all 0.3s ease;
+    }
+
+    .glass-card:hover {
+      border-color: rgba(148, 163, 184, 0.35);
+      background: var(--bg-card-hover);
+    }
+
+    .glass-card.gold-border {
+      border-color: rgba(245, 158, 11, 0.4);
+    }
+    .glass-card.cyan-border {
+      border-color: rgba(56, 189, 248, 0.4);
+    }
+    .glass-card.green-border {
+      border-color: rgba(16, 185, 129, 0.4);
+    }
+    .glass-card.purple-border {
+      border-color: rgba(168, 85, 247, 0.4);
+    }
+    .glass-card.crimson-border {
+      border-color: rgba(239, 68, 68, 0.4);
+    }
+
+    .card-title {
+      font-family: var(--font-display);
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .card-title .icon {
+      font-size: 1.35rem;
+    }
+
+    .card-desc {
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+      line-height: 1.55;
+    }
+
+    .feature-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .feature-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 0.92rem;
+      color: var(--text-secondary);
+      line-height: 1.45;
+    }
+
+    .feature-bullet {
+      color: var(--accent-gold);
+      font-weight: bold;
+      font-size: 1.1rem;
+      line-height: 1;
+      margin-top: 2px;
+    }
+
+    .feature-item strong {
+      color: #fff;
+    }
+
+    /* Code Box */
+    .code-container {
+      background: #060913;
+      border: 1px solid rgba(148, 163, 184, 0.15);
+      border-radius: var(--radius-sm);
+      padding: 14px 16px;
+      font-family: var(--font-code);
+      font-size: 0.82rem;
+      line-height: 1.55;
+      color: #e2e8f0;
+      overflow-x: auto;
+      position: relative;
+    }
+
+    .code-header-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+      font-size: 0.76rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .kw { color: #f43f5e; font-weight: 600; }
+    .fn { color: #38bdf8; font-weight: 600; }
+    .str { color: #34d399; }
+    .num { color: #fbbf24; }
+    .comm { color: #64748b; font-style: italic; }
+    .type { color: #a78bfa; font-weight: 600; }
+
+    /* ==========================================================================
+       SLIDE 1: EXACT GAME INTRO REPLICATION (STUNNING COLD OPEN)
+       ========================================================================== */
+    .intro-slide-wrapper {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(circle at center, #111827 0%, #030712 85%, #000000 100%);
+      box-shadow: inset 0 0 100px rgba(0,0,0,0.9), 0 0 50px rgba(0,0,0,0.8);
+      border: 1px solid rgba(245, 158, 11, 0.25);
+      cursor: pointer;
+    }
+
+    .intro-stone-bg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: 
+        radial-gradient(ellipse at 50% 30%, rgba(30, 41, 59, 0.4) 0%, rgba(3, 7, 18, 0.95) 75%),
+        linear-gradient(rgba(15, 23, 42, 0.2) 2px, transparent 2px),
+        linear-gradient(90deg, rgba(15, 23, 42, 0.2) 2px, transparent 2px);
+      background-size: 100% 100%, 80px 80px, 80px 80px;
+      z-index: 1;
+    }
+
+    .intro-vignette {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at center, rgba(2, 6, 23, 0.3) 0%, rgba(2, 6, 23, 0.85) 80%, rgba(2, 6, 23, 0.98) 100%);
+      z-index: 2;
+    }
+
+    /* Diamond HUD Elements exactly matching iMain.cpp lines 60-68 */
+    .intro-diamond-hud {
+      position: absolute;
+      top: 36px;
+      z-index: 10;
+      width: 48px;
+      height: 48px;
+      background: rgba(30, 41, 59, 0.9);
+      border: 2px solid #f8fafc;
+      transform: rotate(45deg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 15px rgba(255, 255, 255, 0.25);
+      transition: all 0.2s ease;
+    }
+    .intro-diamond-hud:hover {
+      transform: rotate(45deg) scale(1.12);
+      border-color: var(--accent-gold);
+      box-shadow: 0 0 20px rgba(245, 158, 11, 0.6);
+    }
+    .intro-diamond-hud span {
+      transform: rotate(-45deg);
+      font-family: 'Times New Roman', serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #fff;
+    }
+    .intro-diamond-left { left: 48px; }
+    .intro-diamond-right { right: 48px; }
+
+    /* Narrative text exactly matching lines 70-74 of iMain.cpp */
+    .intro-narrative-container {
+      position: relative;
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 16px;
+      max-width: 820px;
+      margin-bottom: 30px;
+    }
+
+    .intro-narrative-lead {
+      font-family: 'Times New Roman', Georgia, serif;
+      font-size: 2.2rem;
+      font-style: italic;
+      color: #ffffff;
+      text-shadow: 0 3px 15px rgba(0, 0, 0, 0.9);
+      letter-spacing: 1px;
+      animation: fadeInNarrative 1.5s ease-out;
+    }
+
+    .intro-narrative-sub {
+      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      font-size: 1.35rem;
+      color: #e2e8f0;
+      letter-spacing: 0.5px;
+      line-height: 1.6;
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.9);
+    }
+
+    /* Radiant Glowing "TAP ANYWHERE TO ENTER" matching line 76-77 of iMain.cpp */
+    .intro-glow-prompt {
+      position: relative;
+      z-index: 10;
+      margin-top: 36px;
+      padding: 14px 34px;
+      border-radius: var(--radius-full);
+      background: rgba(15, 23, 42, 0.7);
+      border: 1px solid rgba(251, 191, 36, 0.6);
+      font-family: var(--font-body);
+      font-size: 1.15rem;
+      font-weight: 700;
+      letter-spacing: 2.5px;
+      color: var(--accent-amber);
+      text-shadow: 0 0 12px rgba(251, 191, 36, 0.9);
+      box-shadow: 0 0 25px rgba(251, 191, 36, 0.35);
+      animation: pulseGlow 2.2s infinite ease-in-out;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .intro-hero-chibi {
+      position: relative;
+      z-index: 10;
+      margin-top: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+    }
+
+    .chibi-avatar-frame {
+      width: 90px;
+      height: 90px;
+      border-radius: var(--radius-full);
+      background: radial-gradient(circle, rgba(239, 68, 68, 0.3) 0%, rgba(15, 23, 42, 0.9) 70%);
+      border: 2px solid rgba(251, 191, 36, 0.6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 30px rgba(239, 68, 68, 0.4);
+      position: relative;
+    }
+
+    .chibi-avatar-frame img {
+      width: 72px;
+      height: 72px;
+      object-fit: contain;
+      filter: drop-shadow(0 4px 10px rgba(0,0,0,0.8));
+    }
+
+    .intro-academic-badge {
+      position: absolute;
+      bottom: 24px;
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+    .intro-academic-badge strong {
+      color: var(--accent-gold);
+    }
+
+    @keyframes fadeInNarrative {
+      from { opacity: 0; transform: translateY(-12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes pulseGlow {
+      0%, 100% {
+        transform: scale(1);
+        box-shadow: 0 0 20px rgba(251, 191, 36, 0.25);
+        color: #fbbf24;
+      }
+      50% {
+        transform: scale(1.03);
+        box-shadow: 0 0 35px rgba(251, 191, 36, 0.65);
+        color: #fff;
+      }
+    }
+
+    /* ==========================================================================
+       TEAM ROSTER CARDS (SLIDE 2)
+       ========================================================================== */
+    .roster-card {
+      background: var(--bg-card);
+      border: 1px solid var(--bg-card-border);
+      border-radius: var(--radius-md);
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    .roster-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+    }
+    .roster-card.ovi::before { background: var(--speaker-ovi); }
+    .roster-card.rythm::before { background: var(--speaker-rythm); }
+    .roster-card.nabeel::before { background: var(--speaker-nabeel); }
+    .roster-card.maheed::before { background: var(--speaker-maheed); }
+
+    .roster-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+
+    .roster-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .roster-name {
+      font-family: var(--font-display);
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .roster-id {
+      font-family: var(--font-code);
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .roster-domain {
+      font-size: 0.88rem;
+      color: var(--text-secondary);
+      line-height: 1.45;
+      flex: 1;
+    }
+
+    .roster-files {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 6px;
+    }
+
+    .file-tag {
+      font-family: var(--font-code);
+      font-size: 0.72rem;
+      background: rgba(30, 41, 59, 0.8);
+      border: 1px solid rgba(148, 163, 184, 0.15);
+      border-radius: 4px;
+      padding: 3px 8px;
+      color: var(--accent-amber);
+    }
+
+    .roster-time {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-top: 1px solid rgba(148, 163, 184, 0.1);
+      padding-top: 10px;
+      font-size: 0.82rem;
+      color: var(--text-muted);
+    }
+
+    /* ==========================================================================
+       INTERACTIVE LABS & WIDGETS
+       ========================================================================== */
+    .interactive-panel {
+      background: rgba(10, 15, 28, 0.95);
+      border: 1px solid rgba(245, 158, 11, 0.3);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--accent-gold);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .interactive-canvas-box {
+      width: 100%;
+      height: 200px;
+      background: #020617;
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      border-radius: var(--radius-sm);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .widget-btn-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .widget-btn {
+      background: rgba(30, 41, 59, 0.9);
+      border: 1px solid rgba(148, 163, 184, 0.25);
+      color: var(--text-primary);
+      padding: 7px 14px;
+      border-radius: var(--radius-sm);
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+    }
+    .widget-btn:hover {
+      background: rgba(51, 65, 85, 0.9);
+      border-color: var(--accent-gold);
+      color: #fff;
+    }
+    .widget-btn.active {
+      background: var(--accent-gold);
+      color: #000;
+      border-color: var(--accent-amber);
+    }
+
+    /* Collab Feature Card */
+    .collab-hero-card {
+      background: radial-gradient(circle at top right, rgba(56, 189, 248, 0.15) 0%, rgba(15, 23, 42, 0.88) 70%);
+      border: 1.5px solid rgba(56, 189, 248, 0.5);
+      border-radius: var(--radius-md);
+      padding: 20px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 0 35px rgba(56, 189, 248, 0.15);
+    }
+
+    .collab-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: var(--radius-full);
+      background: rgba(56, 189, 248, 0.2);
+      border: 1px solid rgba(56, 189, 248, 0.4);
+      color: var(--accent-cyan);
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    /* Penalty Shootout Arena Simulator */
+    .penalty-sim-container {
+      background: radial-gradient(circle at center, #1e293b 0%, #090d16 100%);
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      height: 100%;
+    }
+
+    .goal-box {
+      width: 100%;
+      height: 160px;
+      background: #020617;
+      border: 3px solid #f8fafc;
+      border-bottom: none;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .goal-net-grid {
+      position: absolute;
+      inset: 0;
+      background-image: 
+        linear-gradient(rgba(255,255,255,0.15) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.15) 1px, transparent 1px);
+      background-size: 16px 16px;
+    }
+
+    .messi-gk {
+      position: absolute;
+      bottom: 10px;
+      width: 44px;
+      height: 60px;
+      background: #3b82f6;
+      border: 2px solid #fff;
+      border-radius: 8px 8px 2px 2px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.65rem;
+      font-weight: 800;
+      color: #fff;
+      transition: left 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.8);
+    }
+
+    .football {
+      position: absolute;
+      width: 22px;
+      height: 22px;
+      background: #fff;
+      border-radius: 50%;
+      border: 2px solid #000;
+      box-shadow: 0 0 10px rgba(255,255,255,0.8);
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .crosshair-target {
+      position: absolute;
+      width: 26px;
+      height: 26px;
+      border: 2px dashed var(--accent-gold);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+
+    .power-gauge {
+      width: 100%;
+      height: 12px;
+      background: #0f172a;
+      border: 1px solid rgba(148, 163, 184, 0.3);
+      border-radius: var(--radius-full);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .power-bar-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #10b981 0%, #f59e0b 60%, #ef4444 100%);
+      transition: width 0.05s linear;
+    }
+
+    /* 7-Day Reward Calendar Simulator */
+    .calendar-strip {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 8px;
+    }
+
+    .calendar-cell {
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      border-radius: var(--radius-sm);
+      padding: 10px 6px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.75rem;
+      text-align: center;
+      transition: all 0.25s ease;
+      position: relative;
+    }
+    .calendar-cell.active-today {
+      border-color: var(--accent-gold);
+      box-shadow: 0 0 15px rgba(245, 158, 11, 0.3);
+      transform: scale(1.05);
+      background: rgba(30, 41, 59, 0.95);
+    }
+    .calendar-cell.claimed {
+      border-color: var(--accent-emerald);
+      opacity: 0.75;
+    }
+    .calendar-cell.day7-reno {
+      border-color: var(--accent-cyan);
+      box-shadow: 0 0 20px rgba(56, 189, 248, 0.35);
+    }
+
+    /* ==========================================================================
+       BOTTOM HUD CONTROLLER & TIMERS
+       ========================================================================== */
+    .deck-hud {
+      position: fixed;
+      bottom: 18px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      background: rgba(15, 23, 42, 0.88);
+      border: 1px solid rgba(148, 163, 184, 0.25);
+      border-radius: var(--radius-full);
+      padding: 8px 20px;
+      backdrop-filter: blur(16px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+    }
+
+    .hud-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-secondary);
+      font-size: 1.1rem;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .hud-btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: #fff;
+    }
+
+    .hud-slide-count {
+      font-family: var(--font-code);
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      padding: 0 8px;
+      min-width: 65px;
+      text-align: center;
+    }
+
+    .hud-speaker-indicator {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 4px 14px;
+      border-radius: var(--radius-full);
+      font-size: 0.82rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      background: rgba(30, 41, 59, 0.8);
+      border: 1px solid rgba(148, 163, 184, 0.2);
+    }
+
+    /* Dual Presentation Timers */
+    .timer-container {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border-left: 1px solid rgba(148, 163, 184, 0.2);
+      border-right: 1px solid rgba(148, 163, 184, 0.2);
+      padding: 0 14px;
+    }
+
+    .timer-block {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .timer-label {
+      font-size: 0.65rem;
+      color: var(--text-muted);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+
+    .timer-digits {
+      font-family: var(--font-code);
+      font-size: 0.98rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    .timer-digits.warning {
+      color: var(--accent-gold);
+    }
+    .timer-digits.overtime {
+      color: var(--accent-crimson);
+      animation: pulseGlow 1s infinite;
+    }
+
+    /* Speaker Notes Drawer */
+    #speaker-notes-drawer {
+      position: fixed;
+      bottom: 84px;
+      right: 24px;
+      width: 520px;
+      max-height: 560px;
+      background: rgba(10, 15, 28, 0.95);
+      border: 1px solid rgba(245, 158, 11, 0.4);
+      border-radius: var(--radius-md);
+      padding: 18px;
+      z-index: 99;
+      backdrop-filter: blur(20px);
+      box-shadow: 0 10px 40px rgba(0,0,0,0.8);
+      display: none;
+      flex-direction: column;
+      gap: 10px;
+      overflow-y: auto;
+    }
+    #speaker-notes-drawer.open {
+      display: flex;
+    }
+
+    .notes-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(148, 163, 184, 0.15);
+      padding-bottom: 8px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--accent-gold);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .notes-content {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+    .notes-content ul {
+      margin-left: 18px;
+      margin-top: 6px;
+    }
+    .notes-content li {
+      margin-bottom: 6px;
+    }
+
+    /* Slide Grid Modal */
+    #grid-modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(2, 6, 23, 0.94);
+      z-index: 200;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 40px;
+      backdrop-filter: blur(14px);
+    }
+    #grid-modal.open {
+      display: flex;
+    }
+
+    .grid-modal-content {
+      width: 100%;
+      max-width: 1100px;
+      max-height: 85vh;
+      background: var(--bg-card);
+      border: 1px solid rgba(148, 163, 184, 0.25);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      overflow-y: auto;
+    }
+
+    .grid-cards-box {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+    }
+
+    .grid-slide-thumb {
+      background: #090e1a;
+      border: 1.5px solid rgba(148, 163, 184, 0.15);
+      border-radius: var(--radius-sm);
+      padding: 12px;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      transition: all 0.2s ease;
+    }
+    .grid-slide-thumb:hover {
+      border-color: var(--accent-gold);
+      transform: translateY(-2px);
+    }
+    .grid-slide-thumb.active {
+      border-color: var(--accent-cyan);
+      box-shadow: 0 0 15px rgba(56, 189, 248, 0.4);
+    }
+
+    .thumb-num {
+      font-family: var(--font-code);
+      font-size: 0.72rem;
+      color: var(--accent-gold);
+      font-weight: 700;
+    }
+    .thumb-title {
+      font-family: var(--font-display);
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #fff;
+    }
+    .thumb-speaker {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+    }
+
+    /* Keybind tips badge */
+    .keybind-badge {
+      font-family: var(--font-code);
+      font-size: 0.72rem;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: rgba(30, 41, 59, 0.9);
+      border: 1px solid rgba(148, 163, 184, 0.25);
+      color: var(--accent-amber);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Ambient Ember Canvas for authentic Tricky Castle atmosphere -->
+  <canvas id="ember-canvas"></canvas>
+
+  <div class="deck-viewport">
+
+    <!-- ========================================================================
+         SLIDE 1: EXACT GAME INTRO (IMAGE 3 CLONE & POETIC PROMPT)
+         ======================================================================== -->
+    <section class="slide active" id="slide-1" data-speaker="Team Intro" data-time="0:00 - 0:45">
+      <div class="intro-slide-wrapper" onclick="nextSlide()">
+        <div class="intro-stone-bg"></div>
+        <div class="intro-vignette"></div>
+
+        <!-- Diamond "?" top-left (iMain.cpp L60-63) -->
+        <div class="intro-diamond-hud intro-diamond-left" title="Castle Archives" onclick="event.stopPropagation(); alert('Castle Escape / Tricky Castle\nBuilt in C/C++ with iGraphics & OpenGL\nDeveloped at AUST Computer Graphics Lab');">
+          <span>?</span>
+        </div>
+
+        <!-- Diamond "||" top-right (iMain.cpp L65-68) -->
+        <div class="intro-diamond-hud intro-diamond-right" title="Deck Pause / Settings" onclick="event.stopPropagation(); toggleNotes();">
+          <span>||</span>
+        </div>
+
+        <!-- Poetic Narrative Text directly from iMain.cpp L70-74 -->
+        <div class="intro-narrative-container">
+          <div class="intro-narrative-lead">"...I came a long way to get here"</div>
+          <div class="intro-narrative-sub">There were dozens of traps<br>hundreds of puzzles on my way</div>
+        </div>
+
+        <!-- Hero Presentation: Red Devil CR7 / Sir William Chibi -->
+        <div class="intro-hero-chibi">
+          <div class="chibi-avatar-frame">
+            <img src="Images/chibi_cr7_devil.png" alt="Chibi Hero" onerror="this.onerror=null; this.src='Images/intro_cr7_william.png'; this.onerror=function(){this.style.display='none'; document.getElementById('hero-fallback').style.display='block';}">
+            <div id="hero-fallback" style="display:none; font-size:2.2rem;">⚔️</div>
+          </div>
+        </div>
+
+        <!-- Pulsating Glowing "TAP ANYWHERE TO ENTER" (iMain.cpp L76-77) -->
+        <div class="intro-glow-prompt">
+          <span>★</span> TAP ANYWHERE OR PRESS ANY KEY TO ENTER <span>★</span>
+        </div>
+
+        <!-- Academic Metadata -->
+        <div class="intro-academic-badge">
+          <div><strong>Castle Escape:</strong> A 2D Puzzle Adventure Game Using iGraphics</div>
+          <div>Computer Graphics Lab (AUST) • 12-Minute Interactive Defense Deck</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================================
+         SLIDE 2: PROJECT OVERVIEW & TEAM WORK DISTRIBUTION MATRIX
+         ======================================================================== -->
+    <section class="slide" id="slide-2" data-speaker="Team Intro" data-time="0:45 - 1:30">
+      <div class="slide-header">
+        <div class="slide-title-group">
+          <div class="slide-eyebrow" style="color: var(--accent-gold);">
+            <span>🏛️</span> Ahsanullah University of Science and Technology (AUST)
+          </div>
+          <h1 class="slide-title">Computer Graphics Project Defense</h1>
+          <div class="slide-subtitle">Castle Escape: A 2D Puzzle Adventure Game Using iGraphics (Course: Computer Graphics Lab)</div>
+        </div>
+        <div class="slide-meta-tags">
+          <span class="header-badge">Total Time: 12 Mins</span>
+          <span class="header-badge">4 Presenters • 3 Mins Each</span>
+        </div>
+      </div>
+
+      <div class="slide-body">
+        <div class="grid-4col">
+          <!-- Ovijit Sharma -->
+          <div class="roster-card ovi">
+            <div class="roster-badge" style="color: var(--speaker-ovi);">
+              <span>👑</span> Member 01 • Lead Theorist
+            </div>
+            <div class="roster-name">Ovijit Sharma</div>
+            <div class="roster-id">ID: 00725105101134</div>
+            <div class="roster-domain">
+              Game Theory, Aesthetics & Graphics, 60 FPS Physics Simulation, Player Controller & <strong>RenoSir Collab</strong>.
+            </div>
+            <div class="roster-files">
+              <span class="file-tag">CharacterRender.h</span>
+              <span class="file-tag">RenderUtils.h</span>
+              <span class="file-tag">GameLogic.h</span>
+              <span class="file-tag">InputHandler.h</span>
+            </div>
+            <div class="roster-time">
+              <span>Speech Time:</span>
+              <strong style="color: var(--speaker-ovi);">0:00 - 3:00 (3 Mins)</strong>
+            </div>
+          </div>
+
+          <!-- Shahriar Rythm -->
+          <div class="roster-card rythm">
+            <div class="roster-badge" style="color: var(--speaker-rythm);">
+              <span>🏰</span> Member 02 • Level Architect
+            </div>
+            <div class="roster-name">Shahriar Rythm</div>
+            <div class="roster-id">ID: 00725105101132</div>
+            <div class="roster-domain">
+              Level Design, Dungeon Catalog (24 Floors), Traps, Pressure Plates, Drawbridges, Props & Solution Engine.
+            </div>
+            <div class="roster-files">
+              <span class="file-tag">Levels.h</span>
+              <span class="file-tag">WorldObjects.h</span>
+            </div>
+            <div class="roster-time">
+              <span>Speech Time:</span>
+              <strong style="color: var(--speaker-rythm);">3:00 - 6:00 (3 Mins)</strong>
+            </div>
+          </div>
+
+          <!-- Nabeel Saad Borno -->
+          <div class="roster-card nabeel">
+            <div class="roster-badge" style="color: var(--speaker-nabeel);">
+              <span>🎨</span> Member 03 • UI/UX Lead
+            </div>
+            <div class="roster-name">Nabeel Saad Borno</div>
+            <div class="roster-id">ID: 00725105101135</div>
+            <div class="roster-domain">
+              User Interface System, 3D World Carousel, Hero Selection Carousel, Chapter Maps, HUD & Modals.
+            </div>
+            <div class="roster-files">
+              <span class="file-tag">MenuScreens.h</span>
+              <span class="file-tag">RenderUtils.h (UI)</span>
+            </div>
+            <div class="roster-time">
+              <span>Speech Time:</span>
+              <strong style="color: var(--speaker-nabeel);">6:00 - 9:00 (3 Mins)</strong>
+            </div>
+          </div>
+
+          <!-- Maheed Abrar -->
+          <div class="roster-card maheed">
+            <div class="roster-badge" style="color: var(--speaker-maheed);">
+              <span>⚽</span> Member 04 • Systems & Mini-Game
+            </div>
+            <div class="roster-name">Maheed Abrar</div>
+            <div class="roster-id">ID: 00725105101140</div>
+            <div class="roster-domain">
+              Systems Engineering, Binary Persistence, Audio Engine, <strong>Daily Rewards & Penalty Shootout Derby</strong>.
+            </div>
+            <div class="roster-files">
+              <span class="file-tag">PenaltyGame.h</span>
+              <span class="file-tag">SaveSystem.h</span>
+              <span class="file-tag">AudioSystem.h</span>
+              <span class="file-tag">GameDefines.h</span>
+            </div>
+            <div class="roster-time">
+              <span>Speech Time:</span>
+              <strong style="color: var(--speaker-maheed);">9:00 - 12:00 (3 Mins)</strong>
+            </div>
+          </div>
+        </div>
+
+        <!-- Proposal Scope & Core Objectives Alignment -->
+        <div class="glass-card" style="margin-top: 14px; padding: 16px 20px;">
+          <div style="display: flex; align-items: center; justify-content: space-between;">
+            <div>
+              <strong style="color: var(--accent-gold);">Proposal Scope Verification:</strong>
+              <span style="color: var(--text-secondary); margin-left: 8px;">Main Menu, Player Physics, Collision Detection, Traps, Keys, 24 Levels, Persistence, Daily Rewards, Penalty Derby, and RenoSir AI Collab.</span>
+            </div>
+            <div style="display:flex; align-items:center; gap:12px;">
+              <a href="Castle_Escape_Individual_Presentation_Scripts.pdf" target="_blank" style="text-decoration:none; display:inline-flex; align-items:center; gap:6px; padding:6px 14px; background:linear-gradient(135deg, rgba(245,158,11,0.25), rgba(245,158,11,0.1)); border:1px solid #f59e0b; border-radius:6px; color:#fbbf24; font-weight:700; font-size:0.82rem; box-shadow:0 0 15px rgba(245,158,11,0.2);"><span>📄</span> Open Individual Defense Scripts (PDF)</a>
+              <div style="font-family: var(--font-code); color: var(--accent-emerald); font-size: 0.85rem;">
+                ✓ 100% C++ & iGraphics Compliant
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================================
+         SLIDE 3: OVIJIT SHARMA - GAME THEORY & 60 FPS PHYSICS ENGINE
+         ======================================================================== -->
+    <section class="slide" id="slide-3" data-speaker="Ovijit Sharma" data-time="0:00 - 0:45">
+      <div class="slide-header">
+        <div class="slide-title-group">
+          <div class="slide-eyebrow" style="color: var(--speaker-ovi);">
+            <span>👑</span> Section 1: Ovijit Sharma (00725105101134) • Slide 1/4
+          </div>
+          <h1 class="slide-title">Game Theory & 60 FPS Physics Architecture</h1>
+          <div class="slide-subtitle">Finite State Machine, Fixed Euler Integration & Collision Mathematics</div>
+        </div>
+        <div class="slide-meta-tags">
+          <span class="speaker-pill ovi">Ovijit Sharma</span>
+          <span class="header-badge">GameLogic.h • GameDefines.h</span>
+        </div>
+      </div>
+
+      <div class="slide-body">
+        <div class="grid-2col">
+          <!-- Theoretical Concept -->
+          <div class="glass-card gold-border">
+            <h3 class="card-title"><span class="icon">📐</span> Dungeon Escape Theory & Game State FSM</h3>
+            <p class="card-desc">
+              Designed the core puzzle-platformer gameplay theory inspired by <em>Tricky Castle</em>. Engineered a deterministic 14-state Finite State Machine (<code class="kw">enum GameState</code>) handling seamless transitions between Intro, Menus, In-game Play, Penalty Derby, and Level Clears.
+            </p>
+            <ul class="feature-list">
+              <li class="feature-item">
+                <span class="feature-bullet">•</span>
+                <div><strong>60 FPS Fixed Time-Step:</strong> Updates physics at ~16.6ms intervals using <code>iSetTimer(16, updateGame)</code>.</div>
+              </li>
+              <li class="feature-item">
+                <span class="feature-bullet">•</span>
+                <div><strong>Parabolic Trajectory Equations:</strong> Height computed via <code>y(t) = y₀ + vᵧ·t - ½·g·t²</code> with dynamic variable jump apex.</div>
+              </li>
+              <li class="feature-item">
+                <span class="feature-bullet">•</span>
+                <div><strong>Dual Gravity Tensor:</strong> Supports normal gravity (<code>+g</code> downward) and inverted gravitational polarity for ceiling puzzles (<code>-g</code> upward).</div>
+              </li>
+              <li class="feature-item">
+                <span class="feature-bullet">•</span>
+                <div><strong>Axis-Aligned Bounding Box (AABB):</strong> Fast 2D geometric intersection tests against solid castle blocks and moving platforms.</div>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Code & Architecture -->
+          <div class="glass-card">
+            <div class="code-container">
+              <div class="code-header-bar">
+                <span>GameLogic.h — Physics & Solid Tile Collision</span>
+                <span>C++ / iGraphics</span>
+              </div>
+              <pre><code><span class="comm">// Fixed Euler Integration with Inverted Gravity Support</span>
+<span class="kw">void</span> <span class="fn">updatePlayerPhysics</span>() {
+    <span class="kw">if</span> (!onGround) {
+        <span class="kw">if</span> (!gravityInverted) {
+            velocityY -= GRAVITY; <span class="comm">// -0.52 standard gravity</span>
+            <span class="kw">if</span> (velocityY < -TERMINAL_VELOCITY) velocityY = -TERMINAL_VELOCITY;
+        } <span class="kw">else</span> {
+            velocityY += GRAVITY; <span class="comm">// Inverted ceiling walk</span>
+            <span class="kw">if</span> (velocityY > TERMINAL_VELOCITY) velocityY = TERMINAL_VELOCITY;
+        }
+    }
+    playerX += velocityX;
+    playerY += velocityY;
+
+    <span class="comm">// Ground & Solid Platform Collision Detection</span>
+    <span class="kw">for</span> (<span class="type">int</span> i = <span class="num">0</span>; i < platformCount; i++) {
+        <span class="kw">if</span> (<span class="fn">checkAABBCollision</span>(playerX, playerY, PLAYER_WIDTH, PLAYER_HEIGHT,
+                               platforms[i].x, platforms[i].y, platforms[i].w, platforms[i].h)) {
+            <span class="fn">resolvePlatformContact</span>(i);
+        }
+    }
+}</code></pre>
+            </div>
+
+            <!-- Mini Interactive Physics Sandbox -->
+            <div class="interactive-panel" style="margin-top: 14px;">
+              <div class="panel-header">
+                <span>Interactive Gravity & Jump Simulator</span>
+                <span id="jump-status" style="color: var(--accent-amber);">Ready</span>
+              </div>
+              <div class="widget-btn-row">
+                <button class="widget-btn" onclick="testJump(false)">⚡ Normal Jump</button>
+                <button class="widget-btn" onclick="testJump(true)">🔄 Invert Gravity Jump</button>
+                <button class="widget-btn" onclick="resetSim()">↺ Reset Position</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================================
+         SLIDE 4: OVIJIT SHARMA - PROCEDURAL CHIBI ANIMATION PIPELINE
+         ======================================================================== -->
+    <section class="slide" id="slide-4" data-speaker="Ovijit Sharma" data-time="0:45 - 1:30">
+      <div class="slide-header">
+        <div class="slide-title-group">
+          <div class="slide-eyebrow" style="color: var(--speaker-ovi);">
+            <span>👑</span> Section 1: Ovijit Sharma (00725105101134) • Slide 2/4
+          </div>
+          <h1 class="slide-title">Procedural Chibi Animation Pipeline & Sprite Look</h1>
+          <div class="slide-subtitle">Mathematical Deformation, Squash & Stretch, Dynamic Facing & Breathing Sway</div>
+        </div>
+        <div class="slide-meta-tags">
+          <span class="speaker-pill ovi">Ovijit Sharma</span>
+          <span class="header-badge">CharacterRender.h</span>
+        </div>
+      </div>
+
+      <div class="slide-body">
+        <div class="grid-60-40">
+          <!-- Technical Breakdown -->
+          <div class="glass-card gold-border">
+            <h3 class="card-title"><span class="icon">✨</span> Procedural Animation Without Bloated Sprite Sheets</h3>
+            <p class="card-desc">
+              Instead of loading hundreds of static PNG frames, engineered an organic procedural rendering pipeline (<code class="fn">drawCharacterGraphics</code>) using real-time mathematical trigonometric transforms:
+            </p>
+            <ul class="feature-list">
+              <li class="feature-item">
+                <span class="feature-bullet">•</span>
+                <div><strong>Idle Breathing Sway:</strong> Computes smooth subtle chest expansion using <code>sin(levelTimer * 0.045) * 0.028</code> to bring stationary heroes alive.</div>
+              </li>
+              <li class="feature-item">
+                <span class="feature-bullet">•</span>
+                <div><strong>Articulated Run Stride:</strong> Calculates harmonic vertical bobbing <code>bobY = |sin(walkCycle * 0.20)| * 4.0</code> synchronized with audio step triggers.</div>
+              </li>
+              <li class="feature-item">
+                <span class="feature-bullet">•</span>
+                <div><strong>Parabolic Squash & Stretch:</strong> Stretches character vertically on jump apex (<code>scaleX=0.90, scaleY=1.12</code>) and squashes on landing impact (<code>scaleX=1.18, scaleY=0.82</code>).</div>
+              </li>
+              <li class="feature-item">
+                <span class="feature-bullet">•</span>
+                <div><strong>Dynamic Facing Flip:</strong> Flips horizontal texture orientation instantly when changing directions without texture artifacts.</div>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Interactive Animation Lab -->
+          <div class="interactive-panel">
+            <div class="panel-header">
+              <span>Interactive Chibi Animation Lab</span>
+              <span id="anim-state-label" style="color: var(--accent-cyan);">Idle Breathing</span>
+            </div>
+            <div class="interactive-canvas-box" id="anim-canvas-box" style="display:flex; align-items:center; justify-content:center;">
+              <div id="interactive-chibi" style="width: 60px; height: 80px; background: linear-gradient(180deg, #ef4444 0%, #991b1b 100%); border-radius: 12px; border: 2px solid #f59e0b; display:flex; flex-direction:column; align-items:center; justify-content:center; box-shadow: 0 0 20px rgba(245,158,11,0.4); transition: transform 0.15s ease;">
+                <span style="font-size: 1.6rem;">⚔️</span>
+                <span style="font-family: var(--font-code); font-size: 0.65rem; color:#fff; font-weight:700;">CR7</span>
+              </div>
+            </div>
+            <div class="widget-btn-row">
+              <button class="widget-btn active" onclick="setAnimState('idle')">💤 Idle Sway</button>
+              <button class="widget-btn" onclick="setAnimState('run')">🏃 Run Bounce</button>
+              <button class="widget-btn" onclick="setAnimState('jump')">🚀 Jump Stretch</button>
+              <button class="widget-btn" onclick="setAnimState('squash')">💥 Land Squash</button>
+              <button class="widget-btn" onclick="setAnimState('flip')">🔄 Face Flip</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================================
+         SLIDE 5: OVIJIT SHARMA - VECTOR GRAPHICS & PLAYER CONTROLLER
+         ======================================================================== -->
+    <section class="slide" id="slide-5" data-speaker="Ovijit Sharma" data-time="1:30 - 2:15">
+      <div class="slide-header">
+        <div class="slide-title-group">
+          <div class="slide-eyebrow" style="color: var(--speaker-ovi);">
+            <span>👑</span> Section 1: Ovijit Sharma (00725105101134) • Slide 3/4
+          </div>
+          <h1 class="slide-title">2D Vector Aesthetics, Lighting Shader & Input</h1>
+          <div class="slide-subtitle">Procedural Primitives, Glowing Text, Vignette Shading & Responsive Controls</div>
+        </div>
+        <div class="slide-meta-tags">
+          <span class="speaker-pill ovi">Ovijit Sharma</span>
+          <span class="header-badge">RenderUtils.h • InputHandler.h</span>
+        </div>
+      </div>
+
+      <div class="slide-body">
+        <div class="grid-2col">
+          <!-- Visual Pipeline -->
+          <div class="glass-card gold-border">
+            <h3 class="card-title"><span class="icon">🖌️</span> Procedural Graphics & Shader Simulation</h3>
+            <p class="card-desc">
+              Developed the distinctive visual signature of <em>Castle Escape</em> using pure OpenGL and iGraphics vector rendering routines, overcoming the limitations of static bitmaps:
+            </p>
+            <ul class="feature-list">
+              <li class="feature-item">
+                <span class="feature-bullet">•</span>
+                <div><strong>Dynamic Text Glowing:</strong> Created <code class="fn">drawGlowingText()</code> using multi-pass concentric alpha blending with sine-wave pulsing intensity.</div>
+              </li>
+              <li class="feature-item">
+                <span class="feature-bullet">•</span>
+                <div><strong>Atmospheric Dark Vignette:</strong> Quad-corner gradient overlays (<code>glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)</code>) establishing a moody dungeon atmosphere.</div>
+              </li>
+              <li class="feature-item">
+                <span class="feature-bullet">•</span>
+                <div><strong>Procedural Metallic Cards:</strong> <code class="fn">drawMetallicCard()</code> renders beveled chrome borders, inner drop shadows, and glowing accent rims.</div>
+              </li>
+              <li class="feature-item">
+                <span class="feature-bullet">•</span>
+                <div><strong>Torch Embers Particle System:</strong> Simulates turbulent thermal draft, buoyancy, particle cooling, and alpha fadeout.</div>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Controller & Input Handling -->
+          <div class="glass-card">
+            <h3 class="card-title"><span class="icon">🎮</span> Unified Input Architecture</h3>
+            <p class="card-desc">
+              Authored <code class="file-tag">InputHandler.h</code> to process hybrid controls across desktop keyboards and touch/mouse interfaces seamlessly:
+            </p>
+            <div class="code-container" style="margin-top: 10px;">
+              <div class="code-header-bar">
+                <span>InputHandler.h — Keyboard & Mouse Dispatch</span>
+              </div>
+              <pre><code><span class="comm">// Multi-state Input Routing</span>
+<span class="kw">void</span> <span class="fn">handleGameKeyAction</span>(<span class="type">unsigned char</span> key) {
+    <span class="kw">if</span> (key == <span class="str">'a'</span> || key == <span class="str">'A'</span>) moveLeft();
+    <span class="kw">else if</span> (key == <span class="str">'d'</span> || key == <span class="str">'D'</span>) moveRight();
+    <span class="kw">else if</span> (key == <span class="str">'w'</span> || key == <span class="str">' '</span>) executeJump();
+    <span class="kw">else if</span> (key == <span class="str">'e'</span> || key == <span class="str">'E'</span>) interactWorldObject();
+    <span class="kw">else if</span> (key == <span class="num">27</span>) togglePauseMenu(); <span class="comm">// ESC</span>
+}</code></pre>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================================
+         SLIDE 6: OVIJIT SHARMA - COLLABORATION FEATURE: RENOSIR
+         ======================================================================== -->
+    <section class="slide" id="slide-6" data-speaker="Ovijit Sharma" data-time="2:15 - 3:00">
+      <div class="slide-header">
+        <div class="slide-title-group">
+          <div class="slide-eyebrow" style="color: var(--speaker-ovi);">
+            <span>👑</span> Section 1: Ovijit Sharma (00725105101134) • Slide 4/4
+          </div>
+          <h1 class="slide-title">Special Feature Spotlight: RenoSir Collaboration</h1>
+          <div class="slide-subtitle">AI Strategist & LLM Researcher In-Game Integration, Lore, Sprite Art & 1-Level Trial</div>
+        </div>
+        <div class="slide-meta-tags">
+          <span class="speaker-pill ovi">Ovijit Sharma</span>
+          <span class="header-badge">GameDefines.h • CharacterRender.h</span>
+        </div>
+      </div>
+
+      <div class="slide-body">
+        <div class="grid-60-40">
+          <!-- Lore & Concept -->
+          <div class="collab-hero-card">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+              <span class="collab-badge">⭐ Exclusive Collaboration Event</span>
+              <span class="header-badge" style="color:var(--accent-cyan);">HERO_SAHA_RENO</span>
+            </div>
+            
+            <h2 style="font-family: var(--font-display); font-size: 1.8rem; margin: 12px 0 6px 0; color: #fff;">
+              RenoSir: LLM Researcher & AI Strategist
+            </h2>
+            <div style="font-size: 0.95rem; color: var(--accent-cyan); font-weight: 600; margin-bottom: 14px;">
+              Perk: "Algorithmic Tactics & Trap Bypass" (Base Speed: 4.0 | Jump: 12.0)
+            </div>
+
+            <p class="card-desc" style="color: #e2e8f0; font-size: 0.94rem;">
+              Introduced as our premier crossover collaboration champion! RenoSir brings high-level algorithmic reasoning and machine learning foresight to the medieval dungeon realm, effortlessly predicting tricky trap triggers.
+            </p>
+
+            <ul class="feature-list" style="margin-top: 14px;">
+              <li class="feature-item">
+                <span class="feature-bullet" style="color: var(--accent-cyan);">⚡</span>
+                <div><strong>Algorithmic Puzzle Foresight:</strong> Top-tier agility (Speed 4.0, Jump 12.0) allowing tight platforming margins across difficult spike chambers.</div>
+              </li>
+              <li class="feature-item">
+                <span class="feature-bullet" style="color: var(--accent-cyan);">🛡️</span>
+                <div><strong>Interactive 1-Level Trial System:</strong> Players can test RenoSir for one entire dungeon floor immediately via the Collaboration Banner modal (<code class="fn">renoSirOneLevelTrial = true</code>).</div>
+              </li>
+              <li class="feature-item">
+                <span class="feature-bullet" style="color: var(--accent-cyan);">💎</span>
+                <div><strong>Permanent Unlock Path:</strong> Seamlessly connected to Maheed's 7-Day Login & Penalty Derby system (Day 7 Grand Reward!).</div>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Hero Archetype Showcase -->
+          <div class="glass-card cyan-border" style="display:flex; flex-direction:column; justify-content:space-between;">
+            <div>
+              <h3 class="card-title" style="color: var(--accent-cyan);"><span class="icon">🤖</span> 6 Chibi Hero Archetypes</h3>
+              <p class="card-desc" style="font-size: 0.88rem;">
+                Balanced 6 playable champions in <code class="file-tag">GameDefines.h</code>:
+              </p>
+              <div style="display:flex; flex-direction:column; gap:8px; margin-top:10px;">
+                <div style="display:flex; justify-content:space-between; font-size:0.85rem; padding:6px 10px; background:rgba(30,41,59,0.6); border-radius:6px;">
+                  <span>1. Sir William</span> <strong style="color:var(--accent-gold);">Shield Guard</strong>
+                </div>
+                <div style="display:flex; justify-content:space-between; font-size:0.85rem; padding:6px 10px; background:rgba(30,41,59,0.6); border-radius:6px;">
+                  <span>2. Red Devil CR7</span> <strong style="color:var(--accent-crimson);">Siuuu Sprint</strong>
+                </div>
+                <div style="display:flex; justify-content:space-between; font-size:0.85rem; padding:6px 10px; background:rgba(30,41,59,0.6); border-radius:6px;">
+                  <span>3. Neymar Jr</span> <strong style="color:var(--accent-amber);">Samba Dribble</strong>
+                </div>
+                <div style="display:flex; justify-content:space-between; font-size:0.85rem; padding:6px 10px; background:rgba(30,41,59,0.6); border-radius:6px;">
+                  <span>4. Elena Ranger</span> <strong style="color:var(--accent-cyan);">Frost Step</strong>
+                </div>
+                <div style="display:flex; justify-content:space-between; font-size:0.85rem; padding:6px 10px; background:rgba(30,41,59,0.6); border-radius:6px;">
+                  <span>5. Thorgar Dwarf</span> <strong style="color:#d97706;">Titan Brawn</strong>
+                </div>
+                <div style="display:flex; justify-content:space-between; font-size:0.85rem; padding:6px 10px; background:rgba(56,189,248,0.2); border-radius:6px; border:1px solid rgba(56,189,248,0.5);">
+                  <span style="color:#fff; font-weight:700;">6. RenoSir (Collab)</span> <strong style="color:var(--accent-cyan);">AI Trap Bypass</strong>
+                </div>
+              </div>
+            </div>
+
+            <div style="margin-top: 14px; text-align:center;">
+              <button class="widget-btn" style="width: 100%; justify-content:center; border-color:var(--accent-cyan);" onclick="triggerCollabDemo()">
+                ★ Preview RenoSir Collab Modal ★
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================================
+         SLIDE 7: SHAHRIAR RYTHM - LEVEL DESIGN & 24-FLOOR DUNGEON CATALOG
+         ======================================================================== -->
+    <section class="slide" id="slide-7" data-speaker="Shahriar Rythm" data-time="3:00 - 3:45">
+      <div class="slide-header">
+        <div class="slide-title-group">
+          <div class="slide-eyebrow" style="color: var(--speaker-rythm);">
+            <span>🏰</span> Section 2: Shahriar Rythm (00725105101132) • Slide 1/4
+          </div>
+          <h1 class="slide-title">Level Design Architecture & 24-Floor Catalog</h1>
+          <div class="slide-subtitle">Multi-Chapter Difficulty Curve, Spatial Puzzle Geometry & Theme Progression</div>
+        </div>
+        <div class="slide-meta-tags">
+          <span class="speaker-pill rythm">Shahriar Rythm</span>
+          <span class="header-badge">Levels.h (602 Lines)</span>
+        </div>
+      </div>
+
+      <div class="slide-body">
+        <div class="grid-4col">
+          <!-- Chapter 1 -->
+          <div class="glass-card green-border">
+            <h4 style="color: var(--accent-emerald); font-family: var(--font-display); font-size: 1.1rem; margin-bottom: 6px;">Chapter 1: Princess Castle</h4>
+            <div style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 10px;">Floors 1 – 12 (Core Mechanics)</div>
+            <p style="font-size: 0.86rem; color: var(--text-secondary); line-height: 1.45;">
+              Introductory puzzle mechanics: golden ceiling pull-chains, decoy phantom chests, falling keys, and hidden push doors.
+            </p>
+            <div style="margin-top: 10px; font-size: 0.78rem; font-family: var(--font-code); color: var(--accent-gold);">
+              Key Puzzle: "Don't get carried away"
+            </div>
+          </div>
+
+          <!-- Chapter 2 -->
+          <div class="glass-card green-border">
+            <h4 style="color: var(--accent-emerald); font-family: var(--font-display); font-size: 1.1rem; margin-bottom: 6px;">Chapter 2: Royal Citadel</h4>
+            <div style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 10px;">Floors 13 – 16 (Advanced Dynamics)</div>
+            <p style="font-size: 0.86rem; color: var(--text-secondary); line-height: 1.45;">
+              Complex dynamic entities: gravity inversion pads, dual-action cogwheel winches, spring jump pads, and moving platforms.
+            </p>
+            <div style="margin-top: 10px; font-size: 0.78rem; font-family: var(--font-code); color: var(--accent-cyan);">
+              Key Puzzle: "Ceiling Walker"
+            </div>
+          </div>
+
+          <!-- Chapter 3 -->
+          <div class="glass-card green-border">
+            <h4 style="color: var(--accent-emerald); font-family: var(--font-display); font-size: 1.1rem; margin-bottom: 6px;">Chapter 3: Witch Tower</h4>
+            <div style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 10px;">Floors 17 – 20 (Arcane Traps)</div>
+            <p style="font-size: 0.86rem; color: var(--text-secondary); line-height: 1.45;">
+              Arcane teleportation portals, reverse pressure plates, illusion walls, and time-delayed crushing stone ceilings.
+            </p>
+            <div style="margin-top: 10px; font-size: 0.78rem; font-family: var(--font-code); color: var(--accent-purple);">
+              Key Puzzle: "The Portal Paradox"
+            </div>
+          </div>
+
+          <!-- Chapter 4 -->
+          <div class="glass-card green-border">
+            <h4 style="color: var(--accent-emerald); font-family: var(--font-display); font-size: 1.1rem; margin-bottom: 6px;">Chapter 4: Dragon's Keep</h4>
+            <div style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 10px;">Floors 21 – 24 (Grand Finale)</div>
+            <p style="font-size: 0.86rem; color: var(--text-secondary); line-height: 1.45;">
+              Lava geysers, dual-switch synchronized drawbridges, fast boulder rollouts, and the ultimate throne room escape.
+            </p>
+            <div style="margin-top: 10px; font-size: 0.78rem; font-family: var(--font-code); color: var(--accent-crimson);">
+              Key Puzzle: "Dragon's Gauntlet"
+            </div>
+          </div>
+        </div>
+
+        <!-- Level Data Structure -->
+        <div class="glass-card" style="margin-top: 14px;">
+          <div class="code-container">
+            <div class="code-header-bar">
+              <span>Levels.h — LevelInfo Struct & Floor Catalog</span>
+            </div>
+            <pre><code><span class="kw">struct</span> <span class="type">LevelInfo</span> {
+    <span class="kw">const char</span>* chapter;      <span class="comm">// e.g. "Chapter 1"</span>
+    <span class="kw">const char</span>* floor;        <span class="comm">// e.g. "Floor 1"</span>
+    <span class="kw">const char</span>* title;        <span class="comm">// "Jump across, or find another way"</span>
+    <span class="kw">const char</span>* hint;         <span class="comm">// Contextual player hint</span>
+    <span class="kw">const char</span>* solution;     <span class="comm">// Instant solution text for stuck players</span>
+    <span class="kw">const char</span>* deathMsg;     <span class="comm">// Unique sarcastic ghost death message</span>
+    <span class="kw">const char</span>* bgTexturePath;<span class="comm">// High-res 1024x640 nocturnal dungeon background</span>
+    <span class="type">int</span> startX, startY;       <span class="comm">// Hero spawn coordinates</span>
+    <span class="type">int</span> exitX, exitY;         <span class="comm">// Castle exit door position</span>
+    <span class="type">bool</span> keyRequired;         <span class="comm">// Whether golden key unlock is required</span>
+    <span class="type">bool</span> pushDoor;            <span class="comm">// Heavy door that must be shoved open</span>
+};</code></pre>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================================
+         SLIDE 8: SHAHRIAR RYTHM - TRAP MECHANICS & DUNGEON PROPS
+         ======================================================================== -->
+    <section class="slide" id="slide-8" data-speaker="Shahriar Rythm" data-time="3:45 - 4:30">
+      <div class="slide-header">
+        <div class="slide-title-group">
+          <div class="slide-eyebrow" style="color: var(--speaker-rythm);">
+            <span>🏰</span> Section 2: Shahriar Rythm (00725105101132) • Slide 2/4
+          </div>
+          <h1 class="slide-title">Trap Mechanics & Interactive Dungeon Props</h1>
+          <div class="slide-subtitle">Authentic 3D Red Buttons, Medieval Torches, Ceiling Pull-Chains & Drawbridges</div>
+        </div>
+        <div class="slide-meta-tags">
+          <span class="speaker-pill rythm">Shahriar Rythm</span>
+          <span class="header-badge">WorldObjects.h (527 Lines)</span>
+        </div>
+      </div>
+
+      <div class="slide-body">
+        <div class="grid-60-40">
+          <!-- Prop Engineering -->
+          <div class="glass-card green-border">
+            <h3 class="card-title"><span class="icon">⚙️</span> Interactive Dungeon Props Architecture</h3>
+            <p class="card-desc">
+              Authored <code class="file-tag">WorldObjects.h</code> to transform static background levels into reactive physics-driven puzzle spaces:
+            </p>
+            <ul class="feature-list">
+              <li class="feature-item">
+                <span class="feature-bullet">•</span>
+                <div><strong>Authentic 3D Red Floor Buttons (<code class="fn">drawRedButton</code>):</strong> Sinks 8 pixels downward smoothly with a mechanical click when stepped on by heroes or crates.</div>
+              </li>
+              <li class="feature-item">
+                <span class="feature-bullet">•</span>
+                <div><strong>Medieval Castle Torches (<code class="fn">drawCastleTorch</code>):</strong> Procedural flame flickering using dynamic trigonometric particle dispersion.</div>
+              </li>
+              <li class="feature-item">
+                <span class="feature-bullet">•</span>
+                <div><strong>Ceiling Pull-Chains (<code class="fn">drawCeilingChain</code>):</strong> Golden link chain swinging naturally that lowers drawbridges or extends stone bridges over spike pits.</div>
+              </li>
+              <li class="feature-item">
+                <span class="feature-bullet">•</span>
+                <div><strong>Exit Doors System:</strong> Supports wooden doors, iron-barred portcullises, and locked doors with glowing golden keyholes.</div>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Interactive Trap Sandbox -->
+          <div class="interactive-panel">
+            <div class="panel-header">
+              <span>Interactive Trap Sandbox</span>
+              <span id="trap-state-text" style="color: var(--accent-emerald);">Bridge: Retracted</span>
+            </div>
+            <div class="interactive-canvas-box" id="trap-canvas-box" style="display:flex; flex-direction:column; justify-content:space-between; padding:16px;">
+              <!-- Ceiling Chain -->
+              <div style="display:flex; justify-content:center;">
+                <button class="widget-btn" onclick="toggleChainPull()">⛓️ Pull Ceiling Chain [E]</button>
+              </div>
+              
+              <!-- Middle Bridge & Spikes -->
+              <div style="display:flex; align-items:center; justify-content:space-between; height:50px;">
+                <div style="width:70px; height:18px; background:#475569; border-radius:4px;"></div>
+                <div id="demo-bridge" style="width:0px; height:18px; background:var(--accent-gold); border-radius:4px; transition:width 0.4s ease; display:flex; align-items:center; justify-content:center; font-size:0.65rem; font-weight:700; color:#000;">
+                  BRIDGE
+                </div>
+                <div style="width:70px; height:18px; background:#475569; border-radius:4px;"></div>
+              </div>
+
+              <!-- Floor Spikes & Button -->
+              <div style="display:flex; justify-content:space-between; align-items:flex-end;">
+                <button class="widget-btn" id="demo-floor-btn" onclick="toggleFloorBtn()">🔴 Step on 3D Button</button>
+                <span style="color:var(--accent-crimson); font-size:1.1rem; letter-spacing:2px;">▲▲▲ SPIKES ▲▲▲</span>
+                <span style="font-size:1.6rem;" id="demo-door">🚪 Locked</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================================
+         SLIDE 9: SHAHRIAR RYTHM - PUZZLE MECHANICS & CHAPTER 2 CITADEL
+         ======================================================================== -->
+    <section class="slide" id="slide-9" data-speaker="Shahriar Rythm" data-time="4:30 - 5:15">
+      <div class="slide-header">
+        <div class="slide-title-group">
+          <div class="slide-eyebrow" style="color: var(--speaker-rythm);">
+            <span>🏰</span> Section 2: Shahriar Rythm (00725105101132) • Slide 3/4
+          </div>
+          <h1 class="slide-title">Multi-Chapter Puzzle Dynamics & Gravity Mechanics</h1>
+          <div class="slide-subtitle">Chapter 2 Royal Citadel: Reverse Gravity Pads, Spring Launchers & Winches</div>
+        </div>
+        <div class="slide-meta-tags">
+          <span class="speaker-pill rythm">Shahriar Rythm</span>
+          <span class="header-badge">WorldObjects.h • Levels.h</span>
+        </div>
+      </div>
+
+      <div class="slide-body">
+        <div class="grid-2col">
+          <!-- Innovative Puzzle Devices -->
+          <div class="glass-card green-border">
+            <h3 class="card-title"><span class="icon">🌀</span> Chapter 2 Puzzle Innovations</h3>
+            <p class="card-desc">
+              Expanded beyond basic platforming by implementing complex interactive dungeon devices in Chapter 2 (Royal Citadel):
+            </p>
+            <ul class="feature-list">
+              <li class="feature-item">
+                <span class="feature-bullet">•</span>
+                <div><strong>Gravity Reverse Pads:</strong> Stepping on glowing runic pads inverses the player's gravitational vector, allowing upside-down walking along castle ceilings.</div>
+              </li>
+              <li class="feature-item">
+                <span class="feature-bullet">•</span>
+                <div><strong>Spring Jump Pads (<code class="fn">drawWoodSpringPad</code>):</strong> Compresses upon contact and propels the hero 2.5x higher than normal jump apex to reach hidden lofts.</div>
+              </li>
+              <li class="feature-item">
+                <span class="feature-bullet">•</span>
+                <div><strong>Pushable Crates:</strong> Heavy physics boxes that can be shoved onto buttons to keep doors permanently open or dropped into spike pits as stepping stones.</div>
+              </li>
+              <li class="feature-item">
+                <span class="feature-bullet">•</span>
+                <div><strong>Winch & Cogwheel Drawbridges:</strong> Rotating gear mechanisms that gradually lower heavy fortified drawbridges across bottomless castle chasms.</div>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Tricky Castle Puzzle Philosophy -->
+          <div class="glass-card">
+            <h3 class="card-title"><span class="icon">💡</span> "Tricky" Subversion of Player Expectations</h3>
+            <p class="card-desc">
+              Drawing direct inspiration from <em>Tricky Castle</em>, our puzzle design deliberately subverts conventional video game tropes:
+            </p>
+            <div style="display:flex; flex-direction:column; gap:10px; margin-top:10px;">
+              <div style="background:rgba(30,41,59,0.7); padding:10px 14px; border-radius:8px; border-left:3px solid var(--accent-gold);">
+                <strong style="color:#fff;">Floor 4 — "Use Force, Not Key":</strong>
+                <div style="font-size:0.84rem; color:var(--text-muted); margin-top:3px;">
+                  There is no keyhole! Players searching for keys fail; the solution is pushing directly against the heavy wooden door with brute force.
+                </div>
+              </div>
+              <div style="background:rgba(30,41,59,0.7); padding:10px 14px; border-radius:8px; border-left:3px solid var(--accent-crimson);">
+                <strong style="color:#fff;">Floor 5 — "Don't Let It Press":</strong>
+                <div style="font-size:0.84rem; color:var(--text-muted); margin-top:3px;">
+                  The key drops toward a death trigger! The player must sprint and catch the key in mid-air before it activates the ceiling crusher.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================================
+         SLIDE 10: SHAHRIAR RYTHM - ENTITY SPAWNER & HINT ENGINE
+         ======================================================================== -->
+    <section class="slide" id="slide-10" data-speaker="Shahriar Rythm" data-time="5:15 - 6:00">
+      <div class="slide-header">
+        <div class="slide-title-group">
+          <div class="slide-eyebrow" style="color: var(--speaker-rythm);">
+            <span>🏰</span> Section 2: Shahriar Rythm (00725105101132) • Slide 4/4
+          </div>
+          <h1 class="slide-title">Dynamic Entity Spawner & Instant Solution Engine</h1>
+          <div class="slide-subtitle">Automated Object Lifecycle Management, Reset Handlers & Player Accessibility</div>
+        </div>
+        <div class="slide-meta-tags">
+          <span class="speaker-pill rythm">Shahriar Rythm</span>
+          <span class="header-badge">Levels.h</span>
+        </div>
+      </div>
+
+      <div class="slide-body">
+        <div class="grid-2col">
+          <!-- Entity Lifecycle Engine -->
+          <div class="glass-card green-border">
+            <h3 class="card-title"><span class="icon">⚡</span> Automated Room Entity Lifecycle</h3>
+            <p class="card-desc">
+              Engineered the central room lifecycle function <code class="fn">loadLevel(int lvl)</code> to cleanly instantiate and dispose of all level props without memory leaks:
+            </p>
+            <ul class="feature-list">
+              <li class="feature-item">
+                <span class="feature-bullet">•</span>
+                <div><strong>Dynamic Entity Allocation:</strong> Spawns spikes, chests, pull-chains, levers, and crates into dedicated arrays according to floor specs.</div>
+              </li>
+              <li class="feature-item">
+                <span class="feature-bullet">•</span>
+                <div><strong>Instant State Reset:</strong> Upon player death or restart, restores all initial object coordinates, button states, and door locks within a single frame.</div>
+              </li>
+              <li class="feature-item">
+                <span class="feature-bullet">•</span>
+                <div><strong>RenoSir Trial Tracking:</strong> Checks if <code class="kw">renoSirOneLevelTrial</code> is active and smoothly updates trial status across level completions.</div>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Hint & Solution System -->
+          <div class="glass-card">
+            <h3 class="card-title"><span class="icon">📜</span> In-Game Hint & Solution Engine</h3>
+            <p class="card-desc">
+              To prevent player frustration while maintaining puzzle challenge, designed an in-game hint scroll dialog:
+            </p>
+            <div class="code-container" style="margin-top: 10px;">
+              <div class="code-header-bar">
+                <span>Levels.h — Hint & Instant Solution Delivery</span>
+              </div>
+              <pre><code><span class="comm">// Contextual Hint & Solution Dispenser</span>
+<span class="kw">void</span> <span class="fn">showRoomHintDialog</span>(<span class="type">int</span> floorIdx) {
+    <span class="comm">// Step 1: Subtle Cryptic Room Hint</span>
+    <span class="fn">drawSharpText</span>(<span class="num">280</span>, <span class="num">380</span>, levels[floorIdx].hint, 
+                  GLUT_BITMAP_HELVETICA_18, <span class="num">254</span>, <span class="num">243</span>, <span class="num">199</span>);
+
+    <span class="comm">// Step 2: Instant Solution Walkthrough (Hint Pass)</span>
+    <span class="kw">if</span> (playerHintPasses > <span class="num">0</span> || solutionRevealed) {
+        <span class="fn">drawSharpText</span>(<span class="num">280</span>, <span class="num">320</span>, levels[floorIdx].solution, 
+                      GLUT_BITMAP_HELVETICA_12, <span class="num">56</span>, <span class="num">189</span>, <span class="num">248</span>);
+    }
+}</code></pre>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================================
+         SLIDE 11: NABEEL SAAD BORNO - UI DESIGN & HIGH-RELIEF AESTHETICS
+         ======================================================================== -->
+    <section class="slide" id="slide-11" data-speaker="Nabeel Saad Borno" data-time="6:00 - 6:45">
+      <div class="slide-header">
+        <div class="slide-title-group">
+          <div class="slide-eyebrow" style="color: var(--speaker-nabeel);">
+            <span>🎨</span> Section 3: Nabeel Saad Borno (00725105101135) • Slide 1/4
+          </div>
+          <h1 class="slide-title">User Interface Design System & High-Relief Vector HUD</h1>
+          <div class="slide-subtitle">Design System Tokens, Metallic Cards, Glowing Headers & In-Game Overlay</div>
+        </div>
+        <div class="slide-meta-tags">
+          <span class="speaker-pill nabeel">Nabeel Saad Borno</span>
+          <span class="header-badge">MenuScreens.h • RenderUtils.h</span>
+        </div>
+      </div>
+
+      <div class="slide-body">
+        <div class="grid-2col">
+          <!-- Design System Philosophy -->
+          <div class="glass-card purple-border">
+            <h3 class="card-title"><span class="icon">✨</span> Vector UI System Over Static PNGs</h3>
+            <p class="card-desc">
+              Authored <code class="file-tag">MenuScreens.h</code> (1,363 lines) establishing a comprehensive, resolution-independent vector UI design system:
+            </p>
+            <ul class="feature-list">
+              <li class="feature-item">
+                <span class="feature-bullet">•</span>
+                <div><strong>High-Relief 3D Buttons (<code class="fn">draw3DButton</code>):</strong> Top highlight bezel, gradient face, dark drop-shadow underside, and mouse-hover elevation.</div>
+              </li>
+              <li class="feature-item">
+                <span class="feature-bullet">•</span>
+                <div><strong>Metallic Card Frames:</strong> Beveled slate-navy panels with glowing border channels and radial corner smoothing.</div>
+              </li>
+              <li class="feature-item">
+                <span class="feature-bullet">•</span>
+                <div><strong>Top HUD Header:</strong> In-game floor title banner, active hero badge, pause diamond, and hint scroll trigger.</div>
+              </li>
+              <li class="feature-item">
+                <span class="feature-bullet">•</span>
+                <div><strong>Curated Color Hierarchy:</strong> Golden Amber (#F59E0B) for glory, Arcane Cyan (#38BDF8) for energy, Emerald (#10B981) for success.</div>
+              </li>
+            </ul>
+          </div>
+
+          <!-- UI Elements Showcase -->
+          <div class="glass-card">
+            <h3 class="card-title"><span class="icon">🏆</span> Interactive UI Component Matrix</h3>
+            <div style="display:flex; flex-direction:column; gap:12px; margin-top:10px;">
+              <div style="display:flex; align-items:center; justify-content:space-between; padding:10px 16px; background:rgba(30,41,59,0.8); border-radius:8px; border:1px solid rgba(245,158,11,0.3);">
+                <span>3D Action Button:</span>
+                <button class="widget-btn active" style="padding:6px 16px; font-weight:700;">★ PLAY FLOOR ★</button>
+              </div>
+
+              <div style="display:flex; align-items:center; justify-content:space-between; padding:10px 16px; background:rgba(30,41,59,0.8); border-radius:8px; border:1px solid rgba(56,189,248,0.3);">
+                <span>Currency Counter:</span>
+                <div style="display:flex; gap:12px; font-family:var(--font-code); font-weight:700;">
+                  <span style="color:var(--accent-amber);">🪙 1,250 COINS</span>
+                  <span style="color:var(--accent-cyan);">💎 450 GEMS</span>
+                </div>
+              </div>
+
+              <div style="display:flex; align-items:center; justify-content:space-between; padding:10px 16px; background:rgba(30,41,59,0.8); border-radius:8px; border:1px solid rgba(168,85,247,0.3);">
+                <span>RenoSir Trial HUD Pill:</span>
+                <span class="header-badge" style="color:var(--accent-cyan); border-color:var(--accent-cyan);">⚡ RENOSIR 1-LEVEL TRIAL</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================================
+         SLIDE 12: NABEEL SAAD BORNO - 3D WORLD SELECT CAROUSEL
+         ======================================================================== -->
+    <section class="slide" id="slide-12" data-speaker="Nabeel Saad Borno" data-time="6:45 - 7:30">
+      <div class="slide-header">
+        <div class="slide-title-group">
+          <div class="slide-eyebrow" style="color: var(--speaker-nabeel);">
+            <span>🎨</span> Section 3: Nabeel Saad Borno (00725105101135) • Slide 2/4
+          </div>
+          <h1 class="slide-title">3D World Select & Hero Customization Carousel</h1>
+          <div class="slide-subtitle">Depth Perspective Scaling, Parallax Depth Offsets & 6-Champion Carousel</div>
+        </div>
+        <div class="slide-meta-tags">
+          <span class="speaker-pill nabeel">Nabeel Saad Borno</span>
+          <span class="header-badge">MenuScreens.h</span>
+        </div>
+      </div>
+
+      <div class="slide-body">
+        <div class="grid-60-40">
+          <!-- Carousel Math -->
+          <div class="glass-card purple-border">
+            <h3 class="card-title"><span class="icon">🎠</span> Pseudo-3D Depth Carousel Mathematics</h3>
+            <p class="card-desc">
+              Engineered pseudo-3D carousel navigation routines (<code class="fn">drawWorldSelectMenu</code>) matching the original Tricky Castle world select aesthetic:
+            </p>
+            <ul class="feature-list">
+              <li class="feature-item">
+                <span class="feature-bullet">•</span>
+                <div><strong>Z-Axis Perspective Scaling:</strong> Center card renders at 100% scale; peripheral cards scale down smoothly to 82% scale with diminished opacity (0.65).</div>
+              </li>
+              <li class="feature-item">
+                <span class="feature-bullet">•</span>
+                <div><strong>Trigonometric Interpolation:</strong> Carousel swipe animation smoothly interpolates between card slots using smooth cubic easing.</div>
+              </li>
+              <li class="feature-item">
+                <span class="feature-bullet">•</span>
+                <div><strong>Champion Selection Matrix:</strong> 6-slot hero carousel presenting Sir William, CR7, Neymar Jr, Elena, Thorgar, and RenoSir with real-time stat bars.</div>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Interactive Carousel Simulator -->
+          <div class="interactive-panel">
+            <div class="panel-header">
+              <span>Interactive World Carousel Simulator</span>
+              <span id="carousel-world-title" style="color:var(--accent-gold);">World 1: Princess Castle</span>
+            </div>
+            <div class="interactive-canvas-box" id="carousel-box" style="display:flex; align-items:center; justify-content:center; gap:16px;">
+              <div id="c-card-left" style="width:70px; height:110px; background:#1e293b; border-radius:8px; opacity:0.6; transform:scale(0.85); display:flex; align-items:center; justify-content:center;">
+                🏰
+              </div>
+              <div id="c-card-center" style="width:110px; height:150px; background:#334155; border:2px solid var(--accent-gold); border-radius:12px; display:flex; flex-direction:column; align-items:center; justify-content:center; box-shadow:0 0 25px rgba(245,158,11,0.4); transform:scale(1.05);">
+                <span style="font-size:2rem;">👑</span>
+                <span style="font-size:0.75rem; font-weight:700; color:#fff; margin-top:8px;">CHAPTER 1</span>
+              </div>
+              <div id="c-card-right" style="width:70px; height:110px; background:#1e293b; border-radius:8px; opacity:0.6; transform:scale(0.85); display:flex; align-items:center; justify-content:center;">
+                🧙‍♀️
+              </div>
+            </div>
+            <div class="widget-btn-row" style="justify-content:center;">
+              <button class="widget-btn" onclick="prevWorld()">◀ Previous World</button>
+              <button class="widget-btn" onclick="nextWorld()">Next World ▶</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================================
+         SLIDE 13: NABEEL SAAD BORNO - CHAPTER MAPS & STAR RATING SYSTEM
+         ======================================================================== -->
+    <section class="slide" id="slide-13" data-speaker="Nabeel Saad Borno" data-time="7:30 - 8:15">
+      <div class="slide-header">
+        <div class="slide-title-group">
+          <div class="slide-eyebrow" style="color: var(--speaker-nabeel);">
+            <span>🎨</span> Section 3: Nabeel Saad Borno (00725105101135) • Slide 3/4
+          </div>
+          <h1 class="slide-title">Chapter Selection Maps & Dynamic Star Rating System</h1>
+          <div class="slide-subtitle">Progression Grid Navigation, Locked State Shader & Star Accumulation Engine</div>
+        </div>
+        <div class="slide-meta-tags">
+          <span class="speaker-pill nabeel">Nabeel Saad Borno</span>
+          <span class="header-badge">MenuScreens.h</span>
+        </div>
+      </div>
+
+      <div class="slide-body">
+        <div class="grid-2col">
+          <!-- Progression Engine -->
+          <div class="glass-card purple-border">
+            <h3 class="card-title"><span class="icon">🗺️</span> Chapter Map Progression Flow</h3>
+            <p class="card-desc">
+              Designed distinct grid-based level selection maps for each of the 4 castle chapters:
+            </p>
+            <ul class="feature-list">
+              <li class="feature-item">
+                <span class="feature-bullet">•</span>
+                <div><strong>Floors Grid Layout:</strong> 12 floor buttons per chapter with interactive hover states and clear status borders.</div>
+              </li>
+              <li class="feature-item">
+                <span class="feature-bullet">•</span>
+                <div><strong>3-Star Rating Metric:</strong> Floors award 1 to 3 stars based on completion time, zero death runs, and collecting the secret coin.</div>
+              </li>
+              <li class="feature-item">
+                <span class="feature-bullet">•</span>
+                <div><strong>Dynamic Unlock Gateways:</strong> Subsequent chapters unlock when milestone star thresholds are accumulated (e.g., 15 stars for Juventus CR7 skin).</div>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Code Snippet -->
+          <div class="glass-card">
+            <div class="code-container">
+              <div class="code-header-bar">
+                <span>MenuScreens.h — Star Badges & Level Gate Rendering</span>
+              </div>
+              <pre><code><span class="comm">// Render Floor Button with Star Badges</span>
+<span class="kw">void</span> <span class="fn">drawFloorCard</span>(<span class="type">int</span> floorIdx, <span class="type">int</span> x, <span class="type">int</span> y, <span class="type">bool</span> unlocked, <span class="type">int</span> stars) {
+    <span class="kw">if</span> (!unlocked) {
+        <span class="fn">drawMetallicCard</span>(x, y, <span class="num">80</span>, <span class="num">80</span>, <span class="num">10</span>, <span class="num">0.08f</span>, <span class="num">0.10f</span>, <span class="num">0.14f</span>, <span class="num">0.85f</span>);
+        <span class="fn">drawSharpText</span>(x + <span class="num">30</span>, y + <span class="num">30</span>, <span class="str">"🔒"</span>, GLUT_BITMAP_HELVETICA_18, <span class="num">148</span>, <span class="num">163</span>, <span class="num">184</span>);
+        <span class="kw">return</span>;
+    }
+    <span class="fn">drawMetallicCard</span>(x, y, <span class="num">80</span>, <span class="num">80</span>, <span class="num">10</span>, <span class="num">0.12f</span>, <span class="num">0.18f</span>, <span class="num">0.28f</span>, <span class="num">0.95f</span>);
+    <span class="comm">// Render 3 Procedural Stars</span>
+    <span class="kw">for</span> (<span class="type">int</span> s = <span class="num">0</span>; s < <span class="num">3</span>; s++) {
+        <span class="type">bool</span> earned = (s < stars);
+        <span class="fn">drawStarShape</span>(x + <span class="num">20</span> + s * <span class="num">20</span>, y + <span class="num">16</span>, <span class="num">6.0</span>, <span class="num">3.0</span>, 
+                      earned ? <span class="num">251</span> : <span class="num">71</span>, earned ? <span class="num">191</span> : <span class="num">85</span>, earned ? <span class="num">36</span> : <span class="num">105</span>, <span class="kw">true</span>);
+    }
+}</code></pre>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================================
+         SLIDE 14: NABEEL SAAD BORNO - MODAL DIALOGS & TOAST ALERTS
+         ======================================================================== -->
+    <section class="slide" id="slide-14" data-speaker="Nabeel Saad Borno" data-time="8:15 - 9:00">
+      <div class="slide-header">
+        <div class="slide-title-group">
+          <div class="slide-eyebrow" style="color: var(--speaker-nabeel);">
+            <span>🎨</span> Section 3: Nabeel Saad Borno (00725105101135) • Slide 4/4
+          </div>
+          <h1 class="slide-title">Interactive Modals, Toast Alerts & Settings System</h1>
+          <div class="slide-subtitle">Non-Blocking Toast Pipeline, RenoSir Collab Modal & Settings Controls</div>
+        </div>
+        <div class="slide-meta-tags">
+          <span class="speaker-pill nabeel">Nabeel Saad Borno</span>
+          <span class="header-badge">MenuScreens.h</span>
+        </div>
+      </div>
+
+      <div class="slide-body">
+        <div class="grid-2col">
+          <!-- Modals & Toasts -->
+          <div class="glass-card purple-border">
+            <h3 class="card-title"><span class="icon">🔔</span> Non-Blocking Toast Notification Pipeline</h3>
+            <p class="card-desc">
+              Created <code class="fn">showToast(const char* msg)</code> to provide instantaneous visual feedback without disrupting game execution:
+            </p>
+            <ul class="feature-list">
+              <li class="feature-item">
+                <span class="feature-bullet">•</span>
+                <div><strong>Ease-in/out Alpha Timing:</strong> Toast floats up from bottom-center, holds for 120 frames (~2s), and fades out gracefully.</div>
+              </li>
+              <li class="feature-item">
+                <span class="feature-bullet">•</span>
+                <div><strong>RenoSir Collab Modal (<code class="fn">drawRenoSirCollabModal</code>):</strong> Renders wide banner art, lore, and "CLOSE & ENJOY 1-LEVEL TRIAL" action button.</div>
+              </li>
+              <li class="feature-item">
+                <span class="feature-bullet">•</span>
+                <div><strong>Full Settings Screen:</strong> BGM toggle, SFX slider, resolution diagnostics, and save reset controls.</div>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Live Toast Simulator -->
+          <div class="interactive-panel">
+            <div class="panel-header">
+              <span>Interactive Toast Simulator</span>
+              <span>Visual Feedback Test</span>
+            </div>
+            <div class="widget-btn-row">
+              <button class="widget-btn" onclick="triggerToast('Key Acquired! Door unlocked!')">🔑 Key Toast</button>
+              <button class="widget-btn" onclick="triggerToast('RenoSir 1-Level Trial Activated!')">⚡ Trial Toast</button>
+              <button class="widget-btn" onclick="triggerToast('GOAL! +25 BONUS COINS!')">⚽ Goal Toast</button>
+            </div>
+            <div id="demo-toast-box" style="margin-top:20px; height:50px; display:flex; align-items:center; justify-content:center;">
+              <div id="demo-toast" style="opacity:0; transform:translateY(10px); transition:all 0.3s ease; padding:8px 24px; border-radius:var(--radius-full); background:rgba(30,41,59,0.95); border:1px solid var(--accent-gold); color:#fff; font-weight:600; font-size:0.9rem; box-shadow:0 0 20px rgba(245,158,11,0.3);">
+                Notification message
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================================
+         SLIDE 15: MAHEED ABRAR - SYSTEMS ARCHITECTURE & PERSISTENCE
+         ======================================================================== -->
+    <section class="slide" id="slide-15" data-speaker="Maheed Abrar" data-time="9:00 - 9:45">
+      <div class="slide-header">
+        <div class="slide-title-group">
+          <div class="slide-eyebrow" style="color: var(--speaker-maheed);">
+            <span>⚽</span> Section 4: Maheed Abrar (00725105101140) • Slide 1/4
+          </div>
+          <h1 class="slide-title">Systems Architecture, Audio Engine & Persistence</h1>
+          <div class="slide-subtitle">Binary File Serialization, WinMM MCI Audio Streaming & State Integrity</div>
+        </div>
+        <div class="slide-meta-tags">
+          <span class="speaker-pill maheed">Maheed Abrar</span>
+          <span class="header-badge">SaveSystem.h • AudioSystem.h</span>
+        </div>
+      </div>
+
+      <div class="slide-body">
+        <div class="grid-2col">
+          <!-- Persistence System -->
+          <div class="glass-card cyan-border">
+            <h3 class="card-title"><span class="icon">💾</span> Binary File Serialization (SaveSystem.h)</h3>
+            <p class="card-desc">
+              Authored <code class="file-tag">SaveSystem.h</code> providing rock-solid binary file serialization to <code class="header-badge">tricky_castle_save.dat</code>:
+            </p>
+            <ul class="feature-list">
+              <li class="feature-item">
+                <span class="feature-bullet">•</span>
+                <div><strong>Atomic Serialization:</strong> Writes level unlock flags, 3-star records, coin/gem tallies, unlocked champions, and daily streak counters in a single pass.</div>
+              </li>
+              <li class="feature-item">
+                <span class="feature-bullet">•</span>
+                <div><strong>Corruption Fallback:</strong> If save data is missing or corrupted, initializes safe default profiles to prevent crashes.</div>
+              </li>
+              <li class="feature-item">
+                <span class="feature-bullet">•</span>
+                <div><strong>Collab State Safety:</strong> Validates whether RenoSir is unlocked or running an active trial before allowing character select.</div>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Audio Engine -->
+          <div class="glass-card">
+            <h3 class="card-title"><span class="icon">🔊</span> Windows MCI Audio Engine (AudioSystem.h)</h3>
+            <p class="card-desc">
+              Engineered the background audio streaming architecture using the Windows Media Control Interface (<code class="kw">mciSendString</code>) via <code class="file-tag">winmm.lib</code>:
+            </p>
+            <div class="code-container" style="margin-top: 10px;">
+              <div class="code-header-bar">
+                <span>AudioSystem.h — MCI Streaming & SFX Dispatch</span>
+              </div>
+              <pre><code><span class="comm">// Background BGM Loop Streaming</span>
+<span class="kw">void</span> <span class="fn">playBgm</span>(<span class="kw">const char</span>* filePath) {
+    <span class="kw">if</span> (!bgmEnabled) <span class="kw">return</span>;
+    <span class="fn">mciSendString</span>(<span class="str">"close bgm"</span>, <span class="kw">NULL</span>, <span class="num">0</span>, <span class="kw">NULL</span>);
+    <span class="type">char</span> cmd[<span class="num">256</span>];
+    <span class="fn">sprintf</span>(cmd, <span class="str">"open \"%s\" type mpegvideo alias bgm"</span>, filePath);
+    <span class="fn">mciSendString</span>(cmd, <span class="kw">NULL</span>, <span class="num">0</span>, <span class="kw">NULL</span>);
+    <span class="fn">mciSendString</span>(<span class="str">"play bgm repeat"</span>, <span class="kw">NULL</span>, <span class="num">0</span>, <span class="kw">NULL</span>);
+}</code></pre>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================================
+         SLIDE 16: MAHEED ABRAR - DAILY REWARDS & COLLAB PENALTY LINK
+         ======================================================================== -->
+    <section class="slide" id="slide-16" data-speaker="Maheed Abrar" data-time="9:45 - 10:30">
+      <div class="slide-header">
+        <div class="slide-title-group">
+          <div class="slide-eyebrow" style="color: var(--speaker-maheed);">
+            <span>⚽</span> Section 4: Maheed Abrar (00725105101140) • Slide 2/4
+          </div>
+          <h1 class="slide-title">Daily Game Rewards & RenoSir Collab Integration</h1>
+          <div class="slide-subtitle">7-Day Login Calendar, Milestone Progression & Day 7 RenoSir Unlock</div>
+        </div>
+        <div class="slide-meta-tags">
+          <span class="speaker-pill maheed">Maheed Abrar</span>
+          <span class="header-badge">MenuScreens.h • PenaltyGame.h</span>
+        </div>
+      </div>
+
+      <div class="slide-body">
+        <div class="grid-60-40">
+          <!-- Calendar System -->
+          <div class="glass-card cyan-border">
+            <h3 class="card-title"><span class="icon">🎁</span> 7-Day Login Treasure Architecture</h3>
+            <p class="card-desc">
+              Connected Ovi's RenoSir Collaboration directly to daily player retention through the 7-day Login Treasures system:
+            </p>
+            
+            <div class="calendar-strip" style="margin: 14px 0;">
+              <div class="calendar-cell claimed">
+                <span style="color:var(--accent-emerald);">Day 1</span>
+                <span>💎 50</span>
+                <span style="font-size:0.65rem; color:var(--accent-emerald);">✓ CLAIMED</span>
+              </div>
+              <div class="calendar-cell claimed">
+                <span style="color:var(--accent-emerald);">Day 2</span>
+                <span>🪙 100</span>
+                <span style="font-size:0.65rem; color:var(--accent-emerald);">✓ CLAIMED</span>
+              </div>
+              <div class="calendar-cell claimed">
+                <span style="color:var(--accent-emerald);">Day 3</span>
+                <span>🔑 Key</span>
+                <span style="font-size:0.65rem; color:var(--accent-emerald);">✓ CLAIMED</span>
+              </div>
+              <div class="calendar-cell active-today">
+                <span style="color:var(--accent-gold); font-weight:700;">Day 4</span>
+                <span>📜 Pass</span>
+                <span style="font-size:0.65rem; color:var(--accent-gold); font-weight:700;">SHOOT!</span>
+              </div>
+              <div class="calendar-cell">
+                <span>Day 5</span>
+                <span>🛡️ Shield</span>
+                <span style="font-size:0.65rem; color:var(--text-dim);">LOCKED</span>
+              </div>
+              <div class="calendar-cell">
+                <span>Day 6</span>
+                <span>💎 250</span>
+                <span style="font-size:0.65rem; color:var(--text-dim);">LOCKED</span>
+              </div>
+              <div class="calendar-cell day7-reno">
+                <span style="color:var(--accent-cyan); font-weight:700;">Day 7</span>
+                <span>🤖 RENO</span>
+                <span style="font-size:0.65rem; color:var(--accent-cyan); font-weight:700;">GRAND</span>
+              </div>
+            </div>
+
+            <ul class="feature-list">
+              <li class="feature-item">
+                <span class="feature-bullet">•</span>
+                <div><strong>Daily Reward Claim via Penalty Shootout:</strong> Rather than passive clicking, claiming a daily reward triggers an active Penalty Shootout against Messi AI!</div>
+              </li>
+              <li class="feature-item">
+                <span class="feature-bullet">•</span>
+                <div><strong>Day 7 Grand Unlock:</strong> Scoring the penalty on Day 7 permanently unlocks <strong>RenoSir (AI Strategist)</strong> in the hero roster!</div>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Reward Dynamics -->
+          <div class="glass-card">
+            <h3 class="card-title"><span class="icon">⚖️</span> Reward vs Penalty Dynamics</h3>
+            <p class="card-desc">
+              Engineered gameplay tension where daily rewards must be earned on the pitch:
+            </p>
+            <div style="display:flex; flex-direction:column; gap:10px; margin-top:10px;">
+              <div style="background:rgba(16,185,129,0.15); border:1px solid rgba(16,185,129,0.4); padding:10px; border-radius:8px;">
+                <strong style="color:var(--accent-emerald);">On Goal Scored:</strong>
+                <div style="font-size:0.85rem; color:#e2e8f0;">Claim daily treasure reward, advance calendar day, trigger confetti fountain & CR7 SIUUU celebration!</div>
+              </div>
+              <div style="background:rgba(239,68,68,0.15); border:1px solid rgba(239,68,68,0.4); padding:10px; border-radius:8px;">
+                <strong style="color:var(--accent-crimson);">On Miss / Messi Save:</strong>
+                <div style="font-size:0.85rem; color:#e2e8f0;">Penalty streak resets to 0, reward withheld, Messi taunts Ronny ("SAVED! Over the crossbar!"), player must retry!</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================================
+         SLIDE 17: MAHEED ABRAR - PENALTY DERBY MINI-GAME SIMULATOR
+         ======================================================================== -->
+    <section class="slide" id="slide-17" data-speaker="Maheed Abrar" data-time="10:30 - 11:15">
+      <div class="slide-header">
+        <div class="slide-title-group">
+          <div class="slide-eyebrow" style="color: var(--speaker-maheed);">
+            <span>⚽</span> Section 4: Maheed Abrar (00725105101140) • Slide 3/4
+          </div>
+          <h1 class="slide-title">Penalty Derby Mini-Game: Physics & Messi AI</h1>
+          <div class="slide-subtitle">Power Gauge Charging, 3D Parabolic Ball Trajectory, Net Ripples & Messi AI</div>
+        </div>
+        <div class="slide-meta-tags">
+          <span class="speaker-pill maheed">Maheed Abrar</span>
+          <span class="header-badge">PenaltyGame.h (1,594 Lines)</span>
+        </div>
+      </div>
+
+      <div class="slide-body">
+        <div class="grid-60-40">
+          <!-- Mini-Game Architecture -->
+          <div class="glass-card cyan-border">
+            <h3 class="card-title"><span class="icon">⚽</span> Standalone Mini-Game Architecture</h3>
+            <p class="card-desc">
+              Engineered <code class="file-tag">PenaltyGame.h</code> as a complete standalone football shootout mini-game featuring CR7 vs Messi:
+            </p>
+            <ul class="feature-list">
+              <li class="feature-item">
+                <span class="feature-bullet">•</span>
+                <div><strong>Crosshair Aiming & Power Gauge:</strong> Dynamic crosshair tracking mouse/arrow coordinates; spacebar charges power gauge oscillates 0% to 100%.</div>
+              </li>
+              <li class="feature-item">
+                <span class="feature-bullet">•</span>
+                <div><strong>3D Ball Flight Projection:</strong> Ball scales down from radius 24 to 9 simulating 3D depth into the goalmouth along a parabolic curve.</div>
+              </li>
+              <li class="feature-item">
+                <span class="feature-bullet">•</span>
+                <div><strong>Messi Goalkeeper AI:</strong> Anticipates shot angle with randomized reaction latency, diving left, right, or leaping high.</div>
+              </li>
+              <li class="feature-item">
+                <span class="feature-bullet">•</span>
+                <div><strong>Net Ripple Simulation:</strong> Procedural harmonic displacement on goal netting upon ball entry.</div>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Live Interactive Shootout Arena -->
+          <div class="penalty-sim-container">
+            <div class="panel-header">
+              <span>CR7 vs Messi Penalty Derby Arena</span>
+              <span id="penalty-score-label" style="color:var(--accent-gold);">Streak: 0</span>
+            </div>
+
+            <div class="goal-box" id="goal-arena">
+              <div class="goal-net-grid"></div>
+              <!-- Messi GK -->
+              <div class="messi-gk" id="messi-gk" style="left: calc(50% - 22px);">
+                <span>LEO</span>
+                <span>#10</span>
+              </div>
+              <!-- Ball -->
+              <div class="football" id="sim-ball" style="bottom: 12px; left: calc(50% - 11px);"></div>
+            </div>
+
+            <!-- Power Bar -->
+            <div class="power-gauge">
+              <div class="power-bar-fill" id="sim-power-fill"></div>
+            </div>
+
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <span id="penalty-result-text" style="font-size:0.85rem; font-weight:700; color:var(--text-muted);">Aim with buttons below & Kick!</span>
+              <div class="widget-btn-row">
+                <button class="widget-btn" onclick="shootBall('left')">◀ Shoot Left</button>
+                <button class="widget-btn" onclick="shootBall('center')">▲ Top Corner</button>
+                <button class="widget-btn" onclick="shootBall('right')">Shoot Right ▶</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================================
+         SLIDE 18: MAHEED ABRAR - ENGINE DIAGNOSTICS & TESTING HARNESS
+         ======================================================================== -->
+    <section class="slide" id="slide-18" data-speaker="Maheed Abrar" data-time="11:15 - 12:00">
+      <div class="slide-header">
+        <div class="slide-title-group">
+          <div class="slide-eyebrow" style="color: var(--speaker-maheed);">
+            <span>⚽</span> Section 4: Maheed Abrar (00725105101140) • Slide 4/4
+          </div>
+          <h1 class="slide-title">Quality Assurance, Diagnostics & Test Harness</h1>
+          <div class="slide-subtitle">Automated Screen Capture Harness, OpenGL Pixel Readback & Memory Leak Auditing</div>
+        </div>
+        <div class="slide-meta-tags">
+          <span class="speaker-pill maheed">Maheed Abrar</span>
+          <span class="header-badge">iMain.cpp • GameDefines.h</span>
+        </div>
+      </div>
+
+      <div class="slide-body">
+        <div class="grid-2col">
+          <!-- Automated Capture Harness -->
+          <div class="glass-card cyan-border">
+            <h3 class="card-title"><span class="icon">🧪</span> Automated Capture Test Harness</h3>
+            <p class="card-desc">
+              Engineered automated verification routines allowing the entire game flow to be tested headlessly without human input:
+            </p>
+            <ul class="feature-list">
+              <li class="feature-item">
+                <span class="feature-bullet">•</span>
+                <div><strong>CLI Diagnostic Flag (<code class="header-badge">--autocapture</code>):</strong> Boots the game, traverses all 14 game states sequentially, and writes screenshot logs.</div>
+              </li>
+              <li class="feature-item">
+                <span class="feature-bullet">•</span>
+                <div><strong>OpenGL Screenshot Exporter (<code class="fn">saveGlScreenshot</code>):</strong> Extracts raw OpenGL backbuffer pixels via <code class="fn">glReadPixels</code> and encodes uncompressed BMP snapshots.</div>
+              </li>
+              <li class="feature-item">
+                <span class="feature-bullet">•</span>
+                <div><strong>Memory & Texture Audit:</strong> Monitored OpenGL texture memory bounds to ensure zero leaks during level switching.</div>
+              </li>
+            </ul>
+          </div>
+
+          <!-- QA Code Box -->
+          <div class="glass-card">
+            <div class="code-container">
+              <div class="code-header-bar">
+                <span>iMain.cpp — Automated Frame Capture Routine</span>
+              </div>
+              <pre><code><span class="comm">// Headless Automated Diagnostic Exporter</span>
+<span class="kw">void</span> <span class="fn">saveGlScreenshot</span>(<span class="kw">const char</span>* filename) {
+    <span class="type">unsigned char</span>* pixels = <span class="kw">new unsigned char</span>[SCREEN_WIDTH * SCREEN_HEIGHT * <span class="num">3</span>];
+    <span class="fn">glReadPixels</span>(<span class="num">0</span>, <span class="num">0</span>, SCREEN_WIDTH, SCREEN_HEIGHT, GL_RGB, GL_UNSIGNED_BYTE, pixels);
+    
+    <span class="comm">// Encode BMP Header & Write Frame Buffer</span>
+    <span class="type">FILE</span>* fp = <span class="fn">fopen</span>(filename, <span class="str">"wb"</span>);
+    <span class="fn">writeBmpHeader</span>(fp, SCREEN_WIDTH, SCREEN_HEIGHT);
+    <span class="fn">fwrite</span>(pixels, <span class="num">1</span>, SCREEN_WIDTH * SCREEN_HEIGHT * <span class="num">3</span>, fp);
+    <span class="fn">fclose</span>(fp);
+    <span class="kw">delete</span>[] pixels;
+}</code></pre>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================================
+         SLIDE 19: CONCLUSION, TECHNICAL SYNTHESIS & LIVE DEMO
+         ======================================================================== -->
+    <section class="slide" id="slide-19" data-speaker="Team Conclusion" data-time="12:00 Wrap-up">
+      <div class="slide-header">
+        <div class="slide-title-group">
+          <div class="slide-eyebrow" style="color: var(--accent-gold);">
+            <span>🎉</span> Project Synthesis & Demonstration
+          </div>
+          <h1 class="slide-title">Conclusion, Future Scope & Live Demonstration</h1>
+          <div class="slide-subtitle">Fulfilling All Computer Graphics Lab Proposal Objectives & Future Roadmap</div>
+        </div>
+        <div class="slide-meta-tags">
+          <span class="header-badge" style="color:var(--accent-emerald);">Status: Complete</span>
+          <span class="header-badge">AUST CSE</span>
+        </div>
+      </div>
+
+      <div class="slide-body">
+        <div class="grid-3col">
+          <!-- Summary of Achievements -->
+          <div class="glass-card gold-border">
+            <h3 class="card-title" style="color:var(--accent-gold);"><span class="icon">✅</span> Delivered Objectives</h3>
+            <ul class="feature-list" style="font-size:0.86rem;">
+              <li class="feature-item"><span class="feature-bullet">•</span> Complete 2D puzzle-platformer in C/C++ with iGraphics.</li>
+              <li class="feature-item"><span class="feature-bullet">•</span> 24 puzzle floors spanning 4 thematic castle chapters.</li>
+              <li class="feature-item"><span class="feature-bullet">•</span> 6 unique heroes including RenoSir AI Collab.</li>
+              <li class="feature-item"><span class="feature-bullet">•</span> Daily login rewards linked to Penalty Shootout mini-game.</li>
+              <li class="feature-item"><span class="feature-bullet">•</span> Binary persistence saving ratings and inventory.</li>
+            </ul>
+          </div>
+
+          <!-- Future Roadmap -->
+          <div class="glass-card cyan-border">
+            <h3 class="card-title" style="color:var(--accent-cyan);"><span class="icon">🚀</span> Future Roadmap</h3>
+            <ul class="feature-list" style="font-size:0.86rem;">
+              <li class="feature-item"><span class="feature-bullet" style="color:var(--accent-cyan);">•</span> Real-time 2-player local co-op mode.</li>
+              <li class="feature-item"><span class="feature-bullet" style="color:var(--accent-cyan);">•</span> Procedural dungeon floor generator with random traps.</li>
+              <li class="feature-item"><span class="feature-bullet" style="color:var(--accent-cyan);">•</span> Hardware-accelerated OpenGL shader lighting.</li>
+              <li class="feature-item"><span class="feature-bullet" style="color:var(--accent-cyan);">•</span> Boss encounters with dynamic enemy AI.</li>
+            </ul>
+          </div>
+
+          <!-- Live Demo Trigger -->
+          <div class="glass-card purple-border" style="display:flex; flex-direction:column; justify-content:space-between;">
+            <div>
+              <h3 class="card-title" style="color:var(--accent-purple);"><span class="icon">🎮</span> Live Gameplay</h3>
+              <p class="card-desc" style="font-size:0.88rem;">
+                Ready for live evaluation and interactive demonstration of <em>Castle Escape</em>!
+              </p>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:10px; margin-top:16px;">
+              <a href="Castle_Escape_Individual_Presentation_Scripts.pdf" target="_blank" class="widget-btn" style="text-decoration:none; width:100%; justify-content:center; padding:10px; background:rgba(245,158,11,0.2); border:1px solid #f59e0b; color:#fbbf24; font-weight:700; display:flex; align-items:center; gap:6px;">
+                📄 Open Individual Presentation Scripts (PDF)
+              </a>
+              <button class="widget-btn active" style="width:100%; justify-content:center; padding:10px;" onclick="goToSlide(1)">
+                ↺ Replay Presentation
+              </button>
+              <div style="font-size:0.75rem; text-align:center; color:var(--text-muted);">
+                Press <span class="keybind-badge">F</span> for Fullscreen • <span class="keybind-badge">N</span> for Speaker Notes
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- ==========================================================================
+       BOTTOM HUD CONTROLLER & TIMERS
+       ========================================================================== -->
+  <div class="deck-hud">
+    <button class="hud-btn" onclick="prevSlide()" title="Previous Slide (Left Arrow)">◀</button>
+    <div class="hud-slide-count" id="hud-slide-num">1 / 19</div>
+    <button class="hud-btn" onclick="nextSlide()" title="Next Slide (Right Arrow)">▶</button>
+
+    <div class="hud-speaker-indicator" id="hud-speaker-box">
+      <span id="hud-speaker-icon">👑</span>
+      <span id="hud-speaker-name">Team Intro</span>
+    </div>
+
+    <!-- Dual Presentation Timers: 12-Min Total & 3-Min Speaker -->
+    <div class="timer-container">
+      <div class="timer-block">
+        <span class="timer-label">Total Time (12M)</span>
+        <span class="timer-digits" id="timer-total">00:00</span>
+      </div>
+      <div class="timer-block" style="margin-left: 8px;">
+        <span class="timer-label">Speaker (3M)</span>
+        <span class="timer-digits" id="timer-speaker">00:00</span>
+      </div>
+      <button class="hud-btn" id="timer-toggle-btn" onclick="toggleTimer()" title="Play / Pause Presentation Timer" style="margin-left:4px; font-size:0.85rem;">
+        ▶
+      </button>
+    </div>
+
+    <button class="hud-btn" onclick="toggleNotes()" title="Toggle Speaker Script Notes (N)">📝</button>
+    <a href="Castle_Escape_Individual_Presentation_Scripts.pdf" target="_blank" class="hud-btn" title="Open Individual Presentation Scripts PDF (All 4 Presenters)" style="text-decoration:none; color:#fbbf24; display:inline-flex; align-items:center; gap:5px; padding:0 12px; font-weight:700; font-size:0.78rem; background:rgba(245, 158, 11, 0.22); border-color:rgba(245, 158, 11, 0.55); border-radius:9999px;">📄 Scripts PDF</a>
+    <button class="hud-btn" onclick="toggleGrid()" title="Slide Grid Overview (G)">⊞</button>
+    <button class="hud-btn" onclick="toggleFullscreen()" title="Toggle Fullscreen (F)">⛶</button>
+  </div>
+
+  <!-- ==========================================================================
+       SPEAKER NOTES DRAWER (PRESS 'N')
+       ========================================================================== -->
+  <div id="speaker-notes-drawer">
+    <div class="notes-header">
+      <span id="notes-title">Speaker Script & Key Talking Points</span>
+      <button onclick="toggleNotes()" style="background:none; border:none; color:#fff; cursor:pointer; font-size:1rem;">✕</button>
+    </div>
+    <div class="notes-content" id="notes-body">
+      <!-- Injected by JavaScript dynamically -->
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       SLIDE GRID MODAL OVERVIEW (PRESS 'G')
+       ========================================================================== -->
+  <div id="grid-modal" onclick="toggleGrid()">
+    <div class="grid-modal-content" onclick="event.stopPropagation();">
+      <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(148,163,184,0.2); padding-bottom:10px;">
+        <h2 style="font-family:var(--font-display); font-size:1.3rem; color:#fff;">Slide Navigation Overview (19 Slides • 12 Mins)</h2>
+        <button onclick="toggleGrid()" style="background:none; border:none; color:#fff; cursor:pointer; font-size:1.2rem;">✕</button>
+      </div>
+      <div class="grid-cards-box" id="grid-cards-container">
+        <!-- Injected by JavaScript -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       JAVASCRIPT: SLIDE ENGINE, TIMERS, INTERACTION & CANVAS PARTICLES
+       ========================================================================== -->
+  <script>
+    /* -------------------- DECK STATE & METADATA -------------------- */
+    let currentSlide = 1;
+    const totalSlides = 19;
+    let timerRunning = false;
+    let totalSeconds = 0;
+    let speakerSeconds = 0;
+    let timerInterval = null;
+
+        // Detailed Speaker Script Notes for each 3-Minute presentation block
+    const slideNotes = {
+      1: "<h3>Slide 1: Exact Game Intro (Team Intro / Ovijit)</h3><div style='margin-bottom:8px; font-size:0.8rem; color:#f59e0b;'>⏱️ 0:00 - 0:45 (45s) • Presenter: Ovijit Sharma (Opening on behalf of Team)</div><p><strong>🎙️ Verbatim Spoken Script:</strong><br>\"Honorable course teachers and respected evaluation committee, good morning. We warmly welcome you to our Computer Graphics Lab project defense for <em>Castle Escape: A 2D Puzzle Adventure Game Using iGraphics</em>.<br>Rather than starting with an ordinary title slide, we open directly with the authentic cold open of our game, replicating line-for-line the poetic sequence in <code>iMain.cpp</code>. Built natively in C and C++ on OpenGL, this screen establishes our moody dungeon atmosphere: procedural stone-brick masonry, dark radial vignette shading, and our Chibi Hero standing alone.<br>As the text reads: <em>'I came a long way to get here... there were dozens of traps, hundreds of puzzles on my way.'</em> This project represents a complete, modular, physics-driven puzzle-platformer designed to prove that mathematical algorithms and vector rendering can deliver a modern indie game. Let us enter the fortress.\"</p><p><strong>🎯 Presenter Actions:</strong> Point to CRT-style vignette and pulsating golden prompt. Press Space or click anywhere to transition to Slide 2.</p><p><strong>📄 Full Script PDF:</strong> <a href='Castle_Escape_Individual_Presentation_Scripts.pdf' target='_blank' style='color:#fbbf24; font-weight:bold;'>Open Defense Scripts PDF</a></p>",
+
+      2: "<h3>Slide 2: Team Roster & Proposal Scope (Team Intro / Ovijit)</h3><div style='margin-bottom:8px; font-size:0.8rem; color:#f59e0b;'>⏱️ 0:45 - 1:30 (45s) • Presenter: Ovijit Sharma</div><p><strong>🎙️ Verbatim Spoken Script:</strong><br>\"On Slide 2, we present our team work distribution matrix, mapped 1-to-1 against our approved Computer Graphics Project Proposal. We have structured our presentation into four strict 3-minute technical segments:<br>First, I, <strong>Ovijit Sharma</strong>, led Game Theory, Procedural Aesthetics, 60 FPS Physics Simulation, and our RenoSir AI Collaboration across <code>CharacterRender.h</code>, <code>RenderUtils.h</code>, <code>GameLogic.h</code>, and <code>InputHandler.h</code>.<br>Second, <strong>Shahriar Rythm</strong> engineered our 24-floor dungeon catalog, interactive pressure plates, and tricky puzzle mechanics in <code>Levels.h</code> and <code>WorldObjects.h</code>.<br>Third, <strong>Nabeel Saad Borno</strong> created our resolution-independent 2D Vector UI, 3D world carousels, and toast pipeline in <code>MenuScreens.h</code>.<br>Fourth, <strong>Maheed Abrar</strong> architected our binary file persistence, MCI audio engine, and standalone Penalty Shootout mini-game in <code>PenaltyGame.h</code>, <code>SaveSystem.h</code>, and <code>AudioSystem.h</code>.<br>Every single feature proposed has been coded and verified in C++ with 100% compliance.\"</p><p><strong>🎯 Presenter Actions:</strong> Acknowledge each teammate with an open hand gesture. Highlight strict modular separation of header files.</p>",
+
+      3: "<h3>Slide 3: Game Theory & 60 FPS Physics (Ovijit Sharma)</h3><div style='margin-bottom:8px; font-size:0.8rem; color:#f59e0b;'>⏱️ 0:00 - 0:45 of Ovi (1:30 - 2:15 Total) • Presenter: Ovijit Sharma</div><p><strong>🎙️ Verbatim Spoken Script:</strong><br>\"Moving into my technical contributions: in <code>GameLogic.h</code> and <code>GameDefines.h</code>, I designed the core puzzle-platformer game theory and our 60 FPS deterministic physics engine.<br>To eliminate race conditions and rogue input during screen transitions, I engineered an explicit <strong>14-state Finite State Machine</strong> (<code>enum GameState</code>), ensuring strict synchronization between menus, gameplay, cutscenes, and the penalty derby.<br>Our physics loop runs at a fixed ~16.6ms timestep via <code>iSetTimer(16, updateGame)</code>. We implement numerical <strong>Euler Integration</strong>: vertical velocity decrements by a gravity constant of 0.52 units per frame, clamped at a terminal velocity of 14 to prevent tunneling through tiles.<br>Crucially, I engineered a <strong>Dual-Gravity Tensor</strong>: standard gravity pulls downward, but runic pads invert the gravitational polarity (<code>gravityInverted = true</code>), allowing inverted ceiling walking. Collision is resolved via swept Axis-Aligned Bounding Box (AABB) intersection tests against solid tiles.\"</p><p><strong>🎯 Presenter Actions:</strong> Click <em>⚡ Normal Jump</em>, then <em>🔄 Invert Gravity Jump</em> in the live simulator to demonstrate ceiling walking!</p><p><strong>🎓 Q&A Defense:</strong> <em>Why fixed Euler?</em> Clamped 16.6ms timestep prevents drift while allowing instant collision snapping without numerical instability.</p>",
+
+      4: "<h3>Slide 4: Procedural Chibi Animation Pipeline (Ovijit Sharma)</h3><div style='margin-bottom:8px; font-size:0.8rem; color:#f59e0b;'>⏱️ 0:45 - 1:30 of Ovi (2:15 - 3:00 Total) • Presenter: Ovijit Sharma</div><p><strong>🎙️ Verbatim Spoken Script:</strong><br>\"Standard 2D games often rely on megabytes of static sprite-sheet bitmaps. In <code>CharacterRender.h</code>, I took an advanced algorithmic approach: engineering an organic <strong>procedural deformation pipeline</strong> in pure vector mathematics.<br>Stationary heroes are brought to life through a sinusoidal idle breathing harmonic: <code>sin(levelTimer * 0.045) * 0.028</code>, causing a subtle, organic chest expansion.<br>When moving, our articulated run stride calculates vertical bobbing: <code>bobY = |sin(walkCycle * 0.20)| * 4.0</code>, synchronized with audio footsteps.<br>Furthermore, we implement classic Disney animation principles: at the jump apex, the sprite stretches vertically (<code>scaleX = 0.90, scaleY = 1.12</code>); upon floor impact, it squashes to <code>scaleX = 1.18, scaleY = 0.82</code> before returning to equilibrium. Directional flips are handled seamlessly by negating coordinate offsets without texture artifacts.\"</p><p><strong>🎯 Presenter Actions:</strong> Click <em>💤 Idle Sway</em>, <em>🏃 Run Bounce</em>, <em>🚀 Jump Stretch</em>, and <em>💥 Land Squash</em> in the interactive animation lab!</p>",
+
+      5: "<h3>Slide 5: 2D Vector Aesthetics, Lighting Shader & Input (Ovijit Sharma)</h3><div style='margin-bottom:8px; font-size:0.8rem; color:#f59e0b;'>⏱️ 1:30 - 2:15 of Ovi (3:00 - 3:45 Total) • Presenter: Ovijit Sharma</div><p><strong>🎙️ Verbatim Spoken Script:</strong><br>\"To create a distinct visual signature for Castle Escape, I developed procedural graphics and lighting routines in <code>RenderUtils.h</code> and <code>InputHandler.h</code>.<br>Because iGraphics lacks built-in fragment shaders, I created <code>drawGlowingText()</code> using multi-pass concentric alpha blending. By rendering repeated text passes with expanding pixel offsets and exponentially decaying alpha channel intensities, we produce a dynamic pulsing bloom effect.<br>For atmospheric depth, I implemented a full-screen dark vignette using <code>glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)</code>, casting shadowy corners while keeping our hero illuminated. We also generate metallic cards with beveled rims and a buoyant torch ember particle system.<br>In <code>InputHandler.h</code>, I unified keyboard (WASD/Arrows/Space/E) and mouse click event dispatching into single-frame action triggers like <code>executeJump()</code> and <code>interactWorldObject()</code>.\"</p><p><strong>🎯 Presenter Actions:</strong> Highlight ember particles floating across background. Point to OpenGL blend function in code box.</p>",
+
+      6: "<h3>Slide 6: Special Feature Spotlight: RenoSir Collaboration (Ovijit Sharma)</h3><div style='margin-bottom:8px; font-size:0.8rem; color:#f59e0b;'>⏱️ 2:15 - 3:00 of Ovi (3:45 - 4:30 Total) • Presenter: Ovijit Sharma</div><p><strong>🎙️ Verbatim Spoken Script:</strong><br>\"Our final character innovation is our premier crossover collaboration champion: <strong>RenoSir — LLM Researcher & AI Strategist</strong> (<code>HERO_SAHA_RENO</code>).<br>We connected advanced artificial intelligence themes with dungeon platforming. In our game lore, RenoSir utilizes algorithmic reasoning and predictive LLM foresight to anticipate tricky traps. His stats reflect this agility: boasting top-tier Speed of 4.0 and Jump Power of 12.0, allowing players tight platforming margins across difficult spike chambers.<br>I engineered an interactive <strong>1-Level Trial System</strong>: any player can test RenoSir immediately for one entire floor from the collaboration banner by toggling <code>renoSirOneLevelTrial = true</code>. RenoSir is balanced alongside Sir William, Red Devil CR7, Neymar Jr, Elena, and Thorgar. As Maheed will detail later, RenoSir is permanently unlocked as the Day 7 grand reward in our daily calendar.\"</p><p><strong>🔄 Handover Line:</strong> <em>'With the foundational game theory, physics engine, and character animation pipeline established, I now hand over the presentation to our Level Architect, Shahriar Rythm.'</em></p>",
+
+      7: "<h3>Slide 7: Level Design Architecture & 24-Floor Catalog (Shahriar Rythm)</h3><div style='margin-bottom:8px; font-size:0.8rem; color:#10b981;'>⏱️ 0:00 - 0:45 of Rythm (4:30 - 5:15 Total) • Presenter: Shahriar Rythm</div><p><strong>🎙️ Verbatim Spoken Script:</strong><br>\"Thank you, Ovijit. Respected teachers, I am <strong>Shahriar Rythm</strong>, and my core focus was level design, spatial puzzle geometry, and dungeon progression across <code>Levels.h</code> (comprising over 600 lines of C++).<br>Castle Escape features a comprehensive <strong>24-floor catalog</strong> spanning four distinct castle chapters, engineered with a deliberate multi-chapter difficulty curve:<br><strong>Chapter 1: Princess Castle</strong> (Floors 1 to 12) introduces foundational puzzle platforming: ceiling pull-chains, decoy phantom chests, falling keys, and hidden push-doors.<br><strong>Chapter 2: Royal Citadel</strong> (Floors 13 to 16) introduces dynamic mechanical entities: gravity inversion pads, cogwheel winches, and spring jump pads.<br><strong>Chapters 3 and 4</strong> (Witch Tower and Dragon's Keep) introduce arcane teleportation portals, timed stone crushers, lava geysers, and rolling boulder traps.<br>To manage this cleanly, I designed the <code>LevelInfo</code> struct, encapsulating chapter titles, puzzle hints, instant solutions, sarcastic death messages, spawn points, and door lock states.\"</p><p><strong>🎯 Presenter Actions:</strong> Walk through 4 chapter banners on screen. Explain <code>LevelInfo</code> fields.</p>",
+
+      8: "<h3>Slide 8: Trap Mechanics & Interactive Dungeon Props (Shahriar Rythm)</h3><div style='margin-bottom:8px; font-size:0.8rem; color:#10b981;'>⏱️ 0:45 - 1:30 of Rythm (5:15 - 6:00 Total) • Presenter: Shahriar Rythm</div><p><strong>🎙️ Verbatim Spoken Script:</strong><br>\"In <code>WorldObjects.h</code>, I authored over 520 lines of code dedicated to transforming static level backgrounds into reactive, physics-driven puzzle spaces.<br>Our signature puzzle prop is the <strong>3D Red Floor Button</strong> (<code>drawRedButton</code>). When stepped on by the player or weighted down by a heavy crate, the button physically depresses 8 pixels downward with a mechanical click, closing a circuit to open gates or extend drawbridges.<br>I also developed procedural <strong>Medieval Castle Torches</strong> (<code>drawCastleTorch</code>), generating animated flickering flames via trigonometric particle dispersion without any pre-rendered video files.<br>Furthermore, we have <strong>Ceiling Pull-Chains</strong> (<code>drawCeilingChain</code>). Players can leap and pull these chains, triggering physics callbacks that lower heavy timber drawbridges across bottomless spike pits. Our exit doors support wooden passage doors, iron-barred portcullises, and locked doors with glowing keyholes.\"</p><p><strong>🎯 Presenter Actions:</strong> In the sandbox, click <em>⛓️ Pull Ceiling Chain</em> to lower the bridge, then click <em>🔴 Step on 3D Button</em> to unlock the exit door!</p>",
+
+      9: "<h3>Slide 9: Multi-Chapter Puzzle Dynamics & Gravity Mechanics (Shahriar Rythm)</h3><div style='margin-bottom:8px; font-size:0.8rem; color:#10b981;'>⏱️ 1:30 - 2:15 of Rythm (6:00 - 6:45 Total) • Presenter: Shahriar Rythm</div><p><strong>🎙️ Verbatim Spoken Script:</strong><br>\"In Chapter 2, puzzle mechanics advance from simple jumping into lateral puzzle-solving, drawing inspiration from *Tricky Castle*.<br>First, we introduce <strong>Gravity Reverse Pads</strong>. Stepping onto these glowing runic tiles reverses the player's gravitational vector, causing them to fall upward and walk along the ceiling to reach high-altitude keys.<br>Second, our <strong>Wooden Spring Jump Pads</strong> (<code>drawWoodSpringPad</code>) compress on impact and propel the hero 2.5 times higher than a standard jump, allowing access to secret lofts.<br>Third, we engineered <strong>Pushable Crates</strong>: rigid physics bodies that can be shoved across platforms to hold down pressure plates or dropped into spike pits as stepping stones.<br>Most importantly, our level design deliberately subverts conventional video game tropes. For example, in <strong>Floor 4 — 'Use Force, Not Key'</strong>, players search in vain for a key that does not exist; the solution is to shove the heavy wooden door open with brute force! In <strong>Floor 5</strong>, the key drops toward a fatal death trigger, requiring the player to sprint and catch the key in mid-air before it activates the ceiling crusher.\"</p><p><strong>🎯 Presenter Actions:</strong> Emphasize the psychological subversion of puzzle conventions.</p>",
+
+      10: "<h3>Slide 10: Dynamic Entity Spawner & Instant Solution Engine (Shahriar Rythm)</h3><div style='margin-bottom:8px; font-size:0.8rem; color:#10b981;'>⏱️ 2:15 - 3:00 of Rythm (6:45 - 7:30 Total) • Presenter: Shahriar Rythm</div><p><strong>🎙️ Verbatim Spoken Script:</strong><br>\"A key systems achievement in <code>Levels.h</code> is our central room lifecycle engine, encapsulated in <code>loadLevel(int lvl)</code>.<br>When entering a floor, <code>loadLevel()</code> cleanly resets and instantiates all dynamic entity arrays: spikes, levers, chests, falling stones, and moving platforms. Because we avoid dynamic heap allocations inside the render loop, restarting a floor upon death is instantaneous (zero load latency), eliminating player downtime.<br><code>loadLevel()</code> also preserves persistent state, such as verifying whether RenoSir's 1-level trial is currently active.<br>Finally, to maintain player accessibility without trivializing challenge, I engineered an <strong>In-Game Hint & Solution Dispenser</strong>. If a player is stuck, pressing the hint icon displays a subtle cryptic hint. If they have earned a 'Hint Pass' from daily treasures, they can reveal the exact solution walkthrough text.\"</p><p><strong>🔄 Handover Line:</strong> <em>'Now, to demonstrate how these complex puzzle mechanics and floor catalogs are presented through a unified, high-relief user interface, I hand over the presentation to our UI/UX Lead, Nabeel Saad Borno.'</em></p>",
+
+      11: "<h3>Slide 11: UI Design System & High-Relief Vector HUD (Nabeel Saad Borno)</h3><div style='margin-bottom:8px; font-size:0.8rem; color:#a855f7;'>⏱️ 0:00 - 0:45 of Nabeel (7:30 - 8:15 Total) • Presenter: Nabeel Saad Borno</div><p><strong>🎙️ Verbatim Spoken Script:</strong><br>\"Thank you, Shahriar. Respected faculty members, I am <strong>Nabeel Saad Borno</strong>, and my responsibility was designing and coding the entire user interface, menus, carousel mathematics, and HUD systems in <code>MenuScreens.h</code> (comprising 1,363 lines of C++).<br>Rather than relying on static, pixelated bitmap buttons that distort when scaled, I established a <strong>resolution-independent 2D vector UI design system</strong>.<br>Our primary interaction element is <code>draw3DButton()</code>. Each button features a beveled top highlight rim, a gradient face, a darker cast underside, and a 2-pixel downward translation upon mouse hover and click, giving tactile physical feedback.<br>Our in-game HUD provides immediate telemetry: the active floor banner, a diamond pause toggle, dynamic coin and gem counters, and an active hero badge showing whether a champion or a RenoSir 1-Level Trial is currently active.<br>I established a curated color hierarchy: Warm Amber (<code>#F59E0B</code>) for interactive calls-to-action, Arcane Cyan (<code>#38BDF8</code>) for energy and trials, and Slate Navy for card backdrops.\"</p><p><strong>🎯 Presenter Actions:</strong> Hover mouse cursor over interactive 3D button. Point out currency counters.</p>",
+
+      12: "<h3>Slide 12: 3D World Select & Hero Customization Carousel (Nabeel Saad Borno)</h3><div style='margin-bottom:8px; font-size:0.8rem; color:#a855f7;'>⏱️ 0:45 - 1:30 of Nabeel (8:15 - 9:00 Total) • Presenter: Nabeel Saad Borno</div><p><strong>🎙️ Verbatim Spoken Script:</strong><br>\"To capture the authentic, premium look of *Tricky Castle*, I engineered a <strong>pseudo-3D carousel navigation system</strong> in <code>drawWorldSelectMenu()</code>.<br>Using pure 2D graphics primitives, we simulate 3D cylindrical depth through mathematical perspective scaling. The central selected world card is rendered at 100% scale and full opacity, while neighboring cards to the left and right are mathematically scaled down to 82% size with opacity attenuated to 0.65.<br>When navigating between worlds, we apply trigonometric ease-out interpolation, creating a smooth gliding transition across cards.<br>I applied this identical pseudo-3D depth mathematics to our <strong>Champion Selection Carousel</strong>, which presents all 6 playable heroes: Sir William, CR7, Neymar Jr, Elena, Thorgar, and RenoSir. Each card renders dynamic stat bars for Speed, Jump Power, and Unique Abilities, updating in real time.\"</p><p><strong>🎯 Presenter Actions:</strong> Click <em>◀ Previous World</em> and <em>Next World ▶</em> in the simulator to showcase depth scaling live!</p>",
+
+      13: "<h3>Slide 13: Chapter Selection Maps & Star Rating Engine (Nabeel Saad Borno)</h3><div style='margin-bottom:8px; font-size:0.8rem; color:#a855f7;'>⏱️ 1:30 - 2:15 of Nabeel (9:00 - 9:45 Total) • Presenter: Nabeel Saad Borno</div><p><strong>🎙️ Verbatim Spoken Script:</strong><br>\"Once a player selects a world, they enter our Chapter Map selection screen.<br>Each chapter displays a 12-floor interactive navigation grid. Locked floors are rendered with a dimmed metallic shader and a lock icon.<br>I developed our <strong>Dynamic 3-Star Rating Engine</strong>. Every completed floor awards between 1 and 3 stars based on three clear criteria:<br>First: completing the room; Second: beating the par completion time; and Third: completing the floor with zero deaths while collecting the hidden gold coin.<br>Stars are rendered procedurally using <code>drawStarShape()</code>, which calculates the ten alternating vertices of a golden five-pointed star using polar coordinates. Accumulated stars unlock milestone rewards across the game. For example, earning 15 total stars automatically unlocks the exclusive *Juventus CR7* hero skin.\"</p><p><strong>🎯 Presenter Actions:</strong> Point to 3 procedural golden stars on floor cards. Show polar coordinate calculation.</p>",
+
+      14: "<h3>Slide 14: Interactive Modals, Toast Alerts & Settings (Nabeel Saad Borno)</h3><div style='margin-bottom:8px; font-size:0.8rem; color:#a855f7;'>⏱️ 2:15 - 3:00 of Nabeel (9:45 - 10:30 Total) • Presenter: Nabeel Saad Borno</div><p><strong>🎙️ Verbatim Spoken Script:</strong><br>\"Finally, I engineered the modal dialog and notification architecture.<br>A major challenge in iGraphics is providing player feedback without freezing the rendering loop. To solve this, I built a <strong>non-blocking toast notification queue</strong> via <code>showToast()</code>. When triggered, toasts float upward from the bottom of the screen with an ease-out trajectory, remain fully opaque for 120 frames (~2 seconds), and gracefully fade out using alpha blending.<br>I also designed the <strong>RenoSir Collaboration Modal</strong>, featuring custom banner artwork, lore text, and the 'Close & Enjoy 1-Level Trial' action button.<br>Additionally, I authored our comprehensive Settings menu, providing discrete volume sliders for background music and sound effects, resolution diagnostics, and save reset options.\"</p><p><strong>🎯 Presenter Actions:</strong> Click <em>🔑 Key Toast</em> and <em>⚡ Trial Toast</em> to demonstrate non-blocking animated feedback.</p><p><strong>🔄 Handover Line:</strong> <em>'Now, to explain our systems architecture, binary file persistence, Windows audio engine, and our standalone CR7 vs Messi Penalty Derby mini-game, I invite our Systems Architect, Maheed Abrar.'</em></p>",
+
+      15: "<h3>Slide 15: Systems Architecture, Audio Engine & Persistence (Maheed Abrar)</h3><div style='margin-bottom:8px; font-size:0.8rem; color:#38bdf8;'>⏱️ 0:00 - 0:45 of Maheed (10:30 - 11:15 Total) • Presenter: Maheed Abrar</div><p><strong>🎙️ Verbatim Spoken Script:</strong><br>\"Thank you, Nabeel. Respected teachers, I am <strong>Maheed Abrar</strong>, and my focus was systems engineering, data persistence, the audio engine, and mini-game development across <code>SaveSystem.h</code>, <code>AudioSystem.h</code>, and <code>PenaltyGame.h</code>.<br>First, in <code>SaveSystem.h</code>, I implemented a <strong>binary file serialization architecture</strong> targeting <code>tricky_castle_save.dat</code>. Rather than slow text parsing, we write binary structs atomically: recording all 24 floor unlock flags, 3-star records, coin and gem inventories, unlocked champions, and login streak counters in a single pass.<br>To ensure stability, I built an automatic corruption fallback: if the file is missing or contains invalid byte counts, default profile values are instantiated, ensuring the game never crashes.<br>Second, in <code>AudioSystem.h</code>, I engineered our audio engine leveraging the Windows Media Control Interface (<code>mciSendString</code>) via <code>winmm.lib</code>. This enables seamless, low-overhead streaming of high-quality looping MP3 and WAV background music alongside concurrent sound effects for footsteps, button clicks, and celebrations.\"</p><p><strong>🎯 Presenter Actions:</strong> Point to <code>playBgm()</code> code snippet showing <code>mciSendString</code> loop command.</p>",
+
+      16: "<h3>Slide 16: Daily Game Rewards & RenoSir Collab Integration (Maheed Abrar)</h3><div style='margin-bottom:8px; font-size:0.8rem; color:#38bdf8;'>⏱️ 0:45 - 1:30 of Maheed (11:15 - 12:00 Total) • Presenter: Maheed Abrar</div><p><strong>🎙️ Verbatim Spoken Script:</strong><br>\"A major gameplay innovation I introduced was connecting Ovijit's RenoSir collaboration character to long-term player retention via our <strong>7-Day Login Treasures System</strong>.<br>Each day a player logs in, they advance along a 7-day milestone calendar: earning Gems on Day 1, Coins on Day 2, Master Keys on Day 3, and culminating on <strong>Day 7 with the permanent unlock of RenoSir (AI Strategist)</strong>!<br>However, we introduced a game theory twist: daily rewards are not claimed passively by simply clicking a button. To claim the reward, the player must step up and score a penalty against Messi in our <strong>Penalty Shootout Derby</strong>!<br>This creates thrilling risk-reward dynamics: If the player scores, the daily reward is granted, celebration confetti rains down, and CR7 performs his iconic SIUUU celebration! If the player misses or Messi saves it, the daily streak resets, Messi taunts the player, and they must re-attempt to earn their prize!\"</p><p><strong>🎯 Presenter Actions:</strong> Highlight Day 7 in the calendar on screen. Explain the risk-reward penalty dynamic.</p>",
+
+      17: "<h3>Slide 17: Penalty Derby Mini-Game: Physics & Messi AI (Maheed Abrar)</h3><div style='margin-bottom:8px; font-size:0.8rem; color:#38bdf8;'>⏱️ 1:30 - 2:15 of Maheed (12:00 - 12:45 Total) • Presenter: Maheed Abrar</div><p><strong>🎙️ Verbatim Spoken Script:</strong><br>\"In <code>PenaltyGame.h</code>, I authored nearly 1,600 lines of C++ to create a complete, standalone football shootout mini-game featuring Cristiano Ronaldo versus Lionel Messi.<br>The shooting mechanics feature two core controls: First: a responsive crosshair tracking mouse and keyboard aiming coordinates; Second: an oscillating power gauge that charges from 0% to 100% when holding the spacebar.<br>When kicked, we simulate a <strong>3D parabolic trajectory</strong>: the football's visual radius scales down dynamically from 24 pixels to 9 pixels as it travels toward the goal line, creating authentic 3D depth in a 2D engine.<br>I also developed <strong>Messi's Goalkeeper AI</strong>. Messi analyzes the shot trajectory with a humanized reaction latency, deciding whether to make a diving stop, leap toward the top corner, or stay grounded. If a goal is scored, procedural harmonic displacement ripples across the goal net strings.\"</p><p><strong>🎯 Presenter Actions:</strong> Click <em>▲ Top Corner</em> in the live shootout arena to trigger a penalty kick and Messi's save/dive reaction!</p>",
+
+      18: "<h3>Slide 18: Quality Assurance, Diagnostics & Test Harness (Maheed Abrar)</h3><div style='margin-bottom:8px; font-size:0.8rem; color:#38bdf8;'>⏱️ 2:15 - 3:00 of Maheed (12:45 - 13:30 Total) • Presenter: Maheed Abrar</div><p><strong>🎙️ Verbatim Spoken Script:</strong><br>\"To ensure rock-solid stability during grading and evaluation, I built an automated quality assurance and diagnostic test harness in <code>iMain.cpp</code>.<br>By launching the executable with the <code>--autocapture</code> command-line argument, the game runs headlessly, programmatically traversing all 14 game states without requiring human input.<br>To verify rendering correctness, I authored <code>saveGlScreenshot()</code>. This function reads the raw OpenGL backbuffer directly using <code>glReadPixels(0, 0, width, height, GL_RGB, GL_UNSIGNED_BYTE, pixels)</code> and encodes uncompressed 24-bit BMP image files to disk for automated visual regression auditing.<br>We also performed rigorous memory audits, ensuring that switching between 24 levels and the penalty mini-game produces zero OpenGL texture leaks and zero heap fragmentation. I will now invite our entire team forward to conclude our presentation.\"</p><p><strong>🎯 Presenter Actions:</strong> Point to <code>glReadPixels</code> code block. Motion to team to assemble at the podium.</p>",
+
+      19: "<h3>Slide 19: Joint Conclusion & Live Gameplay Demo (Full Team)</h3><div style='margin-bottom:8px; font-size:0.8rem; color:#ef4444;'>⏱️ 13:30 - 15:00+ • Presenters: Full Team (Ovijit, Shahriar, Nabeel, Maheed)</div><p><strong>🎙️ Verbatim Spoken Script:</strong><br><strong>(Ovijit Sharma):</strong> \"Respected faculty members, in conclusion, <em>Castle Escape</em> stands as a complete, fully realized 2D puzzle-platformer. We have delivered 100% of the objectives outlined in our approved Computer Graphics Project Proposal: a deterministic 60 FPS physics engine, 24 fully populated puzzle floors across 4 castle chapters, 6 balanced heroes including our exclusive RenoSir AI collaboration, a standalone CR7 vs Messi penalty shootout, and robust binary persistence.\"<br><strong>(Maheed Abrar):</strong> \"For our future roadmap, we have laid architectural hooks for real-time 2-player local co-op, procedural level generation with randomized trap seeds, hardware-accelerated OpenGL shader lighting, and dynamic boss encounters.\"<br><strong>(Ovijit Sharma):</strong> \"The entire project compiles cleanly and runs at a rock-solid 60 FPS in Visual Studio 2013 and modern Windows systems using native C++ and iGraphics. We now invite the honorable evaluation committee to witness our live gameplay demonstration, test the puzzles firsthand, and we welcome your questions. Thank you very much!\"</p><p><strong>🎯 Presenter Actions:</strong> Switch window to <code>demo.exe</code> or Visual Studio 2013. Hand keyboard/controller to evaluation teachers!</p>"
+    };
+
+    /* -------------------- SLIDE NAVIGATION -------------------- */
+    function showSlide(index) {
+      if (index < 1) index = 1;
+      if (index > totalSlides) index = totalSlides;
+      currentSlide = index;
+
+      document.querySelectorAll('.slide').forEach((slide, idx) => {
+        if (idx + 1 === currentSlide) {
+          slide.classList.add('active');
+        } else {
+          slide.classList.remove('active');
+        }
+      });
+
+      // Update HUD elements
+      document.getElementById('hud-slide-num').innerText = `${currentSlide} / ${totalSlides}`;
+      
+      const currentSlideEl = document.getElementById(`slide-${currentSlide}`);
+      const speaker = currentSlideEl.getAttribute('data-speaker') || 'Team Intro';
+      document.getElementById('hud-speaker-name').innerText = speaker;
+
+      // Icon & styling according to speaker
+      const iconEl = document.getElementById('hud-speaker-icon');
+      const boxEl = document.getElementById('hud-speaker-box');
+      boxEl.className = 'hud-speaker-indicator';
+
+      if (speaker.includes('Ovijit')) {
+        iconEl.innerText = '👑';
+        boxEl.style.color = 'var(--speaker-ovi)';
+        boxEl.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+      } else if (speaker.includes('Rythm')) {
+        iconEl.innerText = '🏰';
+        boxEl.style.color = 'var(--speaker-rythm)';
+        boxEl.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+      } else if (speaker.includes('Nabeel')) {
+        iconEl.innerText = '🎨';
+        boxEl.style.color = 'var(--speaker-nabeel)';
+        boxEl.style.borderColor = 'rgba(168, 85, 247, 0.4)';
+      } else if (speaker.includes('Maheed')) {
+        iconEl.innerText = '⚽';
+        boxEl.style.color = 'var(--speaker-maheed)';
+        boxEl.style.borderColor = 'rgba(56, 189, 248, 0.4)';
+      } else {
+        iconEl.innerText = '🏛️';
+        boxEl.style.color = '#fff';
+        boxEl.style.borderColor = 'rgba(148, 163, 184, 0.3)';
+      }
+
+      // Update speaker notes
+      document.getElementById('notes-body').innerHTML = slideNotes[currentSlide] || '<p>Slide presentation notes.</p>';
+      document.getElementById('notes-title').innerText = `Slide ${currentSlide} Notes (${speaker})`;
+
+      // Reset speaker timer on new speaker section transition
+      if (currentSlide === 3 || currentSlide === 7 || currentSlide === 11 || currentSlide === 15 || currentSlide === 19) {
+        speakerSeconds = 0;
+        updateTimerDisplay();
+      }
+    }
+
+    function nextSlide() {
+      if (currentSlide < totalSlides) {
+        showSlide(currentSlide + 1);
+      }
+    }
+
+    function prevSlide() {
+      if (currentSlide > 1) {
+        showSlide(currentSlide - 1);
+      }
+    }
+
+    function goToSlide(num) {
+      showSlide(num);
+      closeGrid();
+    }
+
+    /* -------------------- KEYBOARD NAVIGATION -------------------- */
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
+        nextSlide();
+      } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+        prevSlide();
+      } else if (e.key === 'n' || e.key === 'N') {
+        toggleNotes();
+      } else if (e.key === 'g' || e.key === 'G') {
+        toggleGrid();
+      } else if (e.key === 'f' || e.key === 'F') {
+        toggleFullscreen();
+      } else if (e.key === 't' || e.key === 'T') {
+        toggleTimer();
+      } else if (e.key === 'Escape') {
+        closeNotes();
+        closeGrid();
+      }
+    });
+
+    /* -------------------- 12-MINUTE & 3-MINUTE PRESENTATION TIMERS -------------------- */
+    function toggleTimer() {
+      if (timerRunning) {
+        clearInterval(timerInterval);
+        timerRunning = false;
+        document.getElementById('timer-toggle-btn').innerText = '▶';
+      } else {
+        timerRunning = true;
+        document.getElementById('timer-toggle-btn').innerText = '⏸';
+        timerInterval = setInterval(() => {
+          totalSeconds++;
+          speakerSeconds++;
+          updateTimerDisplay();
+        }, 1000);
+      }
+    }
+
+    function updateTimerDisplay() {
+      // Total 12-Min Timer (720s)
+      const tMin = Math.floor(totalSeconds / 60);
+      const tSec = totalSeconds % 60;
+      const totalStr = `${String(tMin).padStart(2, '0')}:${String(tSec).padStart(2, '0')}`;
+      const totalEl = document.getElementById('timer-total');
+      totalEl.innerText = totalStr;
+
+      if (totalSeconds >= 720) {
+        totalEl.className = 'timer-digits overtime';
+      } else if (totalSeconds >= 600) {
+        totalEl.className = 'timer-digits warning';
+      } else {
+        totalEl.className = 'timer-digits';
+      }
+
+      // Speaker 3-Min Timer (180s)
+      const sMin = Math.floor(speakerSeconds / 60);
+      const sSec = speakerSeconds % 60;
+      const speakerStr = `${String(sMin).padStart(2, '0')}:${String(sSec).padStart(2, '0')}`;
+      const speakerEl = document.getElementById('timer-speaker');
+      speakerEl.innerText = speakerStr;
+
+      if (speakerSeconds >= 180) {
+        speakerEl.className = 'timer-digits overtime';
+      } else if (speakerSeconds >= 150) {
+        speakerEl.className = 'timer-digits warning';
+      } else {
+        speakerEl.className = 'timer-digits';
+      }
+    }
+
+    /* -------------------- SPEAKER NOTES DRAWER -------------------- */
+    function toggleNotes() {
+      const drawer = document.getElementById('speaker-notes-drawer');
+      drawer.classList.toggle('open');
+    }
+    function closeNotes() {
+      document.getElementById('speaker-notes-drawer').classList.remove('open');
+    }
+
+    /* -------------------- SLIDE GRID MODAL -------------------- */
+    function toggleGrid() {
+      const modal = document.getElementById('grid-modal');
+      modal.classList.toggle('open');
+      if (modal.classList.contains('open')) {
+        renderGridCards();
+      }
+    }
+    function closeGrid() {
+      document.getElementById('grid-modal').classList.remove('open');
+    }
+
+    function renderGridCards() {
+      const container = document.getElementById('grid-cards-container');
+      container.innerHTML = '';
+
+      for (let i = 1; i <= totalSlides; i++) {
+        const slideEl = document.getElementById(`slide-${i}`);
+        const titleEl = slideEl.querySelector('.slide-title');
+        const title = titleEl ? titleEl.innerText : `Slide ${i}`;
+        const speaker = slideEl.getAttribute('data-speaker') || 'Team';
+        const time = slideEl.getAttribute('data-time') || '';
+
+        const card = document.createElement('div');
+        card.className = `grid-slide-thumb ${i === currentSlide ? 'active' : ''}`;
+        card.onclick = () => goToSlide(i);
+        card.innerHTML = `
+          <div style="display:flex; justify-content:space-between;">
+            <span class="thumb-num">SLIDE ${String(i).padStart(2, '0')}</span>
+            <span style="font-size:0.68rem; color:var(--text-muted);">${time}</span>
+          </div>
+          <div class="thumb-title">${title}</div>
+          <div class="thumb-speaker">${speaker}</div>
+        `;
+        container.appendChild(card);
+      }
+    }
+
+    /* -------------------- FULLSCREEN TOGGLE -------------------- */
+    function toggleFullscreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(err => {});
+      } else {
+        if (document.exitFullscreen) {
+          document.exitFullscreen();
+        }
+      }
+    }
+
+    /* -------------------- INTERACTIVE LABS & WIDGET DEMOS -------------------- */
+    // Slide 3: Jump Simulator
+    let isJumping = false;
+    function testJump(inverted) {
+      if (isJumping) return;
+      isJumping = true;
+      const status = document.getElementById('jump-status');
+      status.innerText = inverted ? 'Inverted Gravity Apex!' : 'Normal Parabolic Jump!';
+      setTimeout(() => {
+        status.innerText = 'Ready';
+        isJumping = false;
+      }, 1200);
+    }
+    function resetSim() {
+      document.getElementById('jump-status').innerText = 'Reset to Ground';
+    }
+
+    // Slide 4: Chibi Animation Simulator
+    function setAnimState(state) {
+      const chibi = document.getElementById('interactive-chibi');
+      const label = document.getElementById('anim-state-label');
+      document.querySelectorAll('#slide-4 .widget-btn').forEach(btn => btn.classList.remove('active'));
+
+      if (state === 'idle') {
+        label.innerText = 'Idle Breathing (Trigonometric Sway)';
+        chibi.style.transform = 'scale(1.0, 1.05)';
+      } else if (state === 'run') {
+        label.innerText = 'Run Stride Bounce (|sin(walkCycle)| * 4px)';
+        chibi.style.transform = 'translateY(-14px) rotate(4deg)';
+      } else if (state === 'jump') {
+        label.innerText = 'Jump Stretch (scaleX=0.90, scaleY=1.12)';
+        chibi.style.transform = 'scale(0.88, 1.25) translateY(-25px)';
+      } else if (state === 'squash') {
+        label.innerText = 'Landing Squash (scaleX=1.18, scaleY=0.82)';
+        chibi.style.transform = 'scale(1.22, 0.78) translateY(6px)';
+      } else if (state === 'flip') {
+        label.innerText = 'Facing Direction Flip (Instant Horizontal Flip)';
+        chibi.style.transform = 'scaleX(-1)';
+      }
+    }
+
+    // Slide 6: RenoSir Collab Modal Preview
+    function triggerCollabDemo() {
+      alert("★ RENOSIR x TRICKY CASTLE COLLABORATION ★\n\nChampion: RenoSir (LLM Researcher & AI Strategist)\nPerk: Algorithmic Tactics & Trap Bypass\nSpeed: 4.0 | Jump: 12.0\n\n1-Level Trial is ready! Play any dungeon floor with RenoSir!");
+    }
+
+    // Slide 8: Trap Sandbox
+    let chainPulled = false;
+    let buttonPressed = false;
+    function toggleChainPull() {
+      chainPulled = !chainPulled;
+      const bridge = document.getElementById('demo-bridge');
+      const text = document.getElementById('trap-state-text');
+      if (chainPulled) {
+        bridge.style.width = '140px';
+        text.innerText = 'Chain Pulled! Bridge Extended!';
+      } else {
+        bridge.style.width = '0px';
+        text.innerText = 'Bridge Retracted';
+      }
+    }
+    function toggleFloorBtn() {
+      buttonPressed = !buttonPressed;
+      const door = document.getElementById('demo-door');
+      const btn = document.getElementById('demo-floor-btn');
+      if (buttonPressed) {
+        btn.innerText = '🔴 Button Pressed (Sunk 8px)';
+        door.innerText = '🚪 UNLOCKED!';
+      } else {
+        btn.innerText = '🔴 Step on 3D Button';
+        door.innerText = '🚪 Locked';
+      }
+    }
+
+    // Slide 12: World Carousel Simulator
+    let currentWorld = 1;
+    const worlds = [
+      { name: "World 1: Princess Castle", icon: "👑" },
+      { name: "World 2: Royal Citadel", icon: "🏰" },
+      { name: "World 3: Witch Tower", icon: "🧙‍♀️" },
+      { name: "World 4: Dragon's Keep", icon: "🐉" }
+    ];
+    function nextWorld() {
+      currentWorld = (currentWorld % worlds.length) + 1;
+      updateWorldCarousel();
+    }
+    function prevWorld() {
+      currentWorld = currentWorld === 1 ? worlds.length : currentWorld - 1;
+      updateWorldCarousel();
+    }
+    function updateWorldCarousel() {
+      document.getElementById('carousel-world-title').innerText = worlds[currentWorld - 1].name;
+      document.querySelector('#c-card-center span:first-child').innerText = worlds[currentWorld - 1].icon;
+      document.querySelector('#c-card-center span:last-child').innerText = `CHAPTER ${currentWorld}`;
+    }
+
+    // Slide 14: Toast Trigger Simulator
+    let toastTimeout;
+    function triggerToast(msg) {
+      const toast = document.getElementById('demo-toast');
+      toast.innerText = msg;
+      toast.style.opacity = '1';
+      toast.style.transform = 'translateY(0)';
+      clearTimeout(toastTimeout);
+      toastTimeout = setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateY(10px)';
+      }, 2000);
+    }
+
+    // Slide 17: Penalty Derby Simulator
+    let penaltyStreak = 0;
+    function shootBall(aim) {
+      const ball = document.getElementById('sim-ball');
+      const messi = document.getElementById('messi-gk');
+      const result = document.getElementById('penalty-result-text');
+      const powerFill = document.getElementById('sim-power-fill');
+      
+      powerFill.style.width = '85%';
+
+      let targetX = 50;
+      let messiX = Math.random() > 0.4 ? (aim === 'left' ? 25 : (aim === 'right' ? 75 : 50)) : 50;
+
+      if (aim === 'left') targetX = 22;
+      if (aim === 'right') targetX = 78;
+      if (aim === 'center') targetX = 50;
+
+      // Animate Messi GK dive
+      messi.style.left = `calc(${messiX}% - 22px)`;
+
+      // Animate Ball Flight & 3D scaling
+      ball.style.left = `calc(${targetX}% - 11px)`;
+      ball.style.bottom = `100px`;
+      ball.style.transform = `scale(0.55)`;
+
+      setTimeout(() => {
+        // Goal vs Saved calculation
+        if (Math.abs(targetX - messiX) > 18) {
+          penaltyStreak++;
+          result.innerText = "GOAL! CR7 scores! SIUUU! Claim Daily Reward!";
+          result.style.color = "var(--accent-emerald)";
+          document.getElementById('penalty-score-label').innerText = `Streak: ${penaltyStreak}`;
+        } else {
+          penaltyStreak = 0;
+          result.innerText = "SAVED! Leo denies CR7! Penalty streak reset to 0!";
+          result.style.color = "var(--accent-crimson)";
+          document.getElementById('penalty-score-label').innerText = `Streak: 0`;
+        }
+
+        // Reset ball position after 1.8s
+        setTimeout(() => {
+          ball.style.bottom = `12px`;
+          ball.style.left = `calc(50% - 11px)`;
+          ball.style.transform = `scale(1)`;
+          messi.style.left = `calc(50% - 22px)`;
+          powerFill.style.width = '0%';
+        }, 1800);
+      }, 400);
+    }
+
+    /* -------------------- AMBIENT EMBER CANVAS SYSTEM -------------------- */
+    const canvas = document.getElementById('ember-canvas');
+    const ctx = canvas.getContext('2d');
+    let width = canvas.width = window.innerWidth;
+    let height = canvas.height = window.innerHeight;
+
+    window.addEventListener('resize', () => {
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
+    });
+
+    const particles = [];
+    const maxParticles = 65;
+
+    for (let i = 0; i < maxParticles; i++) {
+      particles.push({
+        x: Math.random() * width,
+        y: Math.random() * height,
+        vx: (Math.random() - 0.5) * 0.8,
+        vy: -0.6 - Math.random() * 1.2,
+        radius: Math.random() * 2.5 + 1.0,
+        alpha: Math.random() * 0.8 + 0.2,
+        color: Math.random() > 0.4 ? 'rgba(251, 191, 36,' : 'rgba(239, 68, 68,'
+      });
+    }
+
+    function renderEmbers() {
+      ctx.clearRect(0, 0, width, height);
+
+      for (let i = 0; i < particles.length; i++) {
+        const p = particles[i];
+        p.x += p.vx + Math.sin(p.y * 0.02) * 0.4;
+        p.y += p.vy;
+
+        if (p.y < -10) {
+          p.y = height + 10;
+          p.x = Math.random() * width;
+        }
+
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+        ctx.fillStyle = `${p.color} ${p.alpha})`;
+        ctx.shadowBlur = 12;
+        ctx.shadowColor = '#f59e0b';
+        ctx.fill();
+      }
+
+      requestAnimationFrame(renderEmbers);
+    }
+    renderEmbers();
+
+    // Initialize slide deck on load
+    showSlide(1);
+  </script>
+</body>
+</html>

@@ -1,0 +1,62 @@
+# =========================================================================
+# Tricky Castle: Git Ignore Rules for Visual Studio C++ & OpenGL Project
+# =========================================================================
+
+# --- Visual Studio Temporary & Cache Files ---
+*.sdf
+*.opensdf
+*.suo
+*.user
+*.db
+*.opendb
+.vs/
+ipch/
+*.vcxproj.user
+
+# --- Build Outputs & Intermediates ---
+Debug/
+Release/
+x64/
+Win32/
+*.obj
+*.ilk
+*.pdb
+*.idb
+*.tlog
+*.lastbuildstate
+*.log
+*.res
+*.pch
+*.lib
+!GLU32.LIB
+!Glaux.lib
+!OPENGL32.LIB
+!glui32.lib
+!glut32.lib
+
+# --- Root Executables & DLLs (Keep GLUT32.DLL for standalone run) ---
+demo.exe
+TorchboundKeep.exe
+!GLUT32.DLL
+
+# --- Scratch Helper Tools & Utilities ---
+CleanCr7Back.exe
+FindBounds.exe
+FindCr7Bounds.exe
+InspectColumns.exe
+ffmpeg.exe
+ffprobe.exe
+yt-dlp.exe
+
+# --- Large Raw Audio & Temporary Animation Frames ---
+tricky_castle_audio.m4a
+tricky_castle_bgm.wav
+frame*.png
+screenshot_*.png
+*.bmp
+
+# --- Local User Save File ---
+tricky_castle_save.dat
+
+# --- Backup Files ---
+*.bak

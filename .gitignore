@@ -1,0 +1,87 @@
+# =========================================================================
+# Castle Escape / TorchboundKeep - Professional .gitignore
+# Visual Studio C++, OpenGL, and Game Asset Git Configuration
+# =========================================================================
+
+# --- Visual Studio Build Artifacts & User State ---
+*.sdf
+*.opensdf
+*.suo
+*.user
+*.db
+*.opendb
+.vs/
+ipch/
+*.vcxproj.user
+Debug/
+Release/
+x64/
+Win32/
+*.obj
+*.ilk
+*.pdb
+*.idb
+*.tlog
+*.lastbuildstate
+*.log
+*.res
+*.pch
+*.bak
+*.tmp
+
+# --- Compiled Executables (Distribute via GitHub Releases) ---
+*.exe
+demo.exe
+TorchboundKeep.exe
+
+# --- Large Utility Binaries & Scraping Tools ---
+ffmpeg.exe
+ffprobe.exe
+yt-dlp.exe
+CleanCr7Back.exe
+FindBounds.exe
+FindCr7Bounds.exe
+InspectColumns.exe
+
+# --- Intermediate Video Frames & Temporary Files ---
+frame*.png
+screenshot_*.png
+test.pdf
+extract_headers*.ps1
+generate_final_report_pdf.ps1
+generate_pdf.ps1
+
+# --- Heavy Raw Audio / Video Dumps (>50MB or uncompressed) ---
+*.m4a
+tricky_castle_audio.m4a
+tricky_castle_bgm.wav
+cheer_raw.wav
+whistle_raw.wav
+siuuu_orig.wav
+siuuu_raw.wav
+kick_raw.wav
+menu_intro.wav
+
+# --- Redundant Presentation Versions & Docs in Demo (Kept in docs/) ---
+demo/*.pptx
+demo/*.pdf
+demo/*.html
+demo/MODULES.md
+Castle_Escape_Presentation.pptx
+Castle_Escape_Presentation_v3.pptx
+Castle_Escape_Presentation_v4.pptx
+
+# --- Runtime Save Data ---
+tricky_castle_save.dat
+
+# --- Explicit Whitelist for Required Game Engine Assets & Libraries ---
+!demo/GLUT32.DLL
+!demo/GLU32.LIB
+!demo/Glaux.lib
+!demo/OPENGL32.LIB
+!demo/glui32.lib
+!demo/glut32.lib
+!demo/Audios/*.wav
+!demo/Audios/*.mp3
+!demo/Images/*
+!demo/GameSnaps/*

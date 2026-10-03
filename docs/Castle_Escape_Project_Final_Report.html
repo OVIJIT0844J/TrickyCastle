@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Castle Escape - Project Final Report (CSE-1200 / Software Development - I)</title>
+  <style>
+    /* ==========================================================================
+       AUST PROJECT FINAL REPORT - STRICT 6-PAGE REPLICATION
+       Fonts extracted from Sample PDF: Cambria (Headings/Cover) & Arial (Body)
+       ========================================================================== */
+    @page {
+      size: A4 portrait;
+      margin: 16mm 18mm 16mm 18mm;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
+      font-size: 9.8pt;
+      line-height: 1.42;
+      color: #000000;
+      background: #ffffff;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+
+    .report-page {
+      width: 100%;
+      height: 265mm;
+      max-height: 265mm;
+      page-break-after: always;
+      break-after: page;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+    }
+
+    .report-page:last-child {
+      page-break-after: avoid;
+      break-after: avoid;
+    }
+
+    /* Page 1: Cover Page (Cambria Serif Typography matching sample) */
+    .cover-container {
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      font-family: "Cambria", "Times New Roman", Georgia, serif;
+      padding-top: 15px;
+    }
+
+    .aust-univ-name {
+      font-family: "Cambria", "Times New Roman", Georgia, serif;
+      font-size: 14pt;
+      font-weight: bold;
+      letter-spacing: 0.3px;
+      color: #000000;
+      margin-bottom: 4px;
+    }
+
+    .aust-address {
+      font-family: "Cambria", "Times New Roman", Georgia, serif;
+      font-size: 11.5pt;
+      color: #000000;
+      margin-bottom: 22px;
+    }
+
+    .aust-logo-box {
+      margin: 8px 0 22px 0;
+    }
+
+    .aust-logo-box img {
+      width: 125px;
+      height: auto;
+      display: inline-block;
+    }
+
+    .aust-dept-name {
+      font-family: "Cambria", "Times New Roman", Georgia, serif;
+      font-size: 12pt;
+      color: #000000;
+      margin-bottom: 4px;
+    }
+
+    .aust-program-name {
+      font-family: "Cambria", "Times New Roman", Georgia, serif;
+      font-size: 12pt;
+      color: #000000;
+      margin-bottom: 26px;
+    }
+
+    .report-main-title {
+      font-family: "Cambria", "Times New Roman", Georgia, serif;
+      font-size: 14pt;
+      font-weight: bold;
+      color: #000000;
+      margin-bottom: 22px;
+    }
+
+    .cover-meta-block {
+      text-align: left;
+      width: 100%;
+      max-width: 500px;
+      margin-bottom: 18px;
+      line-height: 1.6;
+      font-size: 11pt;
+      font-family: "Cambria", "Times New Roman", Georgia, serif;
+    }
+
+    .cover-meta-block strong {
+      display: inline-block;
+      min-width: 145px;
+      font-weight: normal;
+    }
+
+    .cover-section-title {
+      font-family: "Cambria", "Times New Roman", Georgia, serif;
+      font-size: 11pt;
+      font-weight: normal;
+      text-align: left;
+      width: 100%;
+      max-width: 500px;
+      margin-bottom: 4px;
+    }
+
+    .cover-people-box {
+      text-align: left;
+      width: 100%;
+      max-width: 500px;
+      margin-bottom: 18px;
+      line-height: 1.45;
+      font-size: 10.5pt;
+      font-family: "Cambria", "Times New Roman", Georgia, serif;
+    }
+
+    .cover-people-box .person-item {
+      margin-bottom: 6px;
+    }
+
+    /* Headings (Cambria / Arial) */
+    h1.sec-heading {
+      font-family: "Cambria", "Times New Roman", Georgia, serif;
+      font-size: 16pt;
+      font-weight: bold;
+      text-align: center;
+      margin: 16px 0 12px 0;
+      color: #000000;
+    }
+    h1.sec-heading:first-of-type {
+      margin-top: 5px;
+    }
+
+    h2.subsec-heading {
+      font-size: 11.5pt;
+      font-weight: bold;
+      margin: 10px 0 4px 0;
+      color: #000000;
+    }
+
+    p {
+      margin-bottom: 8px;
+      text-align: justify;
+      line-height: 1.42;
+    }
+
+    ul.report-bullets {
+      margin: 4px 0 8px 22px;
+      list-style-type: disc;
+    }
+
+    ul.report-bullets li {
+      margin-bottom: 3px;
+      line-height: 1.38;
+    }
+
+    ol.report-numbers {
+      margin: 4px 0 8px 22px;
+    }
+
+    ol.report-numbers li {
+      margin-bottom: 3px;
+      line-height: 1.38;
+    }
+
+    /* Tables */
+    table.report-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 8px 0 10px 0;
+      font-size: 9pt;
+    }
+
+    table.report-table th, table.report-table td {
+      border: 1px solid #333333;
+      padding: 5px 8px;
+      text-align: left;
+      vertical-align: top;
+      line-height: 1.35;
+    }
+
+    table.report-table th {
+      background-color: #f2f2f2;
+      font-weight: bold;
+    }
+
+    /* High-Resolution Screenshots (Significantly Increased Size) */
+    .figure-container {
+      text-align: center;
+      margin: 8px 0 10px 0;
+    }
+
+    .figure-container img.large-screenshot {
+      width: 95%;
+      max-width: 95%;
+      height: auto;
+      max-height: 235px; /* Increased from 130px to 235px for maximum clarity */
+      border: 1px solid #444444;
+      border-radius: 2px;
+      display: inline-block;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+
+    .figure-caption {
+      font-size: 9.8pt;
+      font-weight: bold;
+      margin-top: 5px;
+      color: #000000;
+      text-align: center;
+    }
+
+    .nb-text {
+      font-size: 9pt;
+      font-weight: bold;
+      color: #222222;
+      margin: 4px 0 8px 0;
+      text-align: center;
+    }
+
+    /* GitHub Contribution Card */
+    .github-graph-card {
+      border: 1px solid #444444;
+      border-radius: 4px;
+      padding: 8px 12px;
+      background: #fafafa;
+      margin: 6px 0 4px 0;
+      font-size: 8.5pt;
+      line-height: 1.35;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ========================================================================
+       PAGE 1: COVER PAGE (EXACT CAMBRIA SERIF REPLICATION)
+       ======================================================================== -->
+  <div class="report-page cover-container">
+    <div class="aust-univ-name">AHSANULLAH UNIVERSITY OF SCIENCE AND TECHNOLOGY (AUST)</div>
+    <div class="aust-address">141 & 142, Love Road, Tejgaon Industrial Area, Dhaka-1208.</div>
+
+    <!-- Authentic Official AUST Logo Image -->
+    <div class="aust-logo-box">
+      <img src="Images/aust_logo.png" alt="AUST Logo">
+    </div>
+
+    <div class="aust-dept-name">Department of Computer Science and Engineering</div>
+    <div class="aust-program-name">Program: Bachelor of Science in Computer Science and Engineering</div>
+
+    <div class="report-main-title">Project Final Report</div>
+
+    <div class="cover-meta-block">
+      <div style="display: flex; margin-bottom: 3px;">
+        <span style="min-width: 150px;">Course No:</span>
+        <span>CSE-1200</span>
+      </div>
+      <div style="display: flex; margin-bottom: 6px;">
+        <span style="min-width: 150px;">Course Title:</span>
+        <span>Software Development – I</span>
+      </div>
+      <div style="display: flex; margin-bottom: 6px;">
+        <span style="min-width: 150px;">Project Title:</span>
+        <span>Castle Escape: A 2D Puzzle Adventure Game Using iGraphics</span>
+      </div>
+      <div style="display: flex;">
+        <span style="min-width: 150px;">Date of Submission:</span>
+        <span>28/09/2026</span>
+      </div>
+    </div>
+
+    <div class="cover-section-title">Submitted to</div>
+    <div class="cover-people-box">
+      <div class="person-item">
+        <strong>Saha Reno</strong><br>
+        Assistant Professor, Department of CSE, AUST.
+      </div>
+      <div class="person-item">
+        <strong>Md. Zahid Hossain</strong><br>
+        Lecturer, Department of CSE, AUST.
+      </div>
+    </div>
+
+    <div class="cover-section-title">Submitted by,</div>
+    <div class="cover-people-box" style="margin-bottom: 0;">
+      <div class="person-item">
+        Name: <strong>Ovijit Sharma</strong><br>
+        Student ID: 00725105101134
+      </div>
+      <div class="person-item">
+        Name: <strong>Shahriar Rythm</strong><br>
+        Student ID: 00725105101132
+      </div>
+      <div class="person-item">
+        Name: <strong>Nabeel Saad Borno</strong><br>
+        Student ID: 00725105101135
+      </div>
+      <div class="person-item">
+        Name: <strong>Maheed Abrar</strong><br>
+        Student ID: 00725105101140
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       PAGE 2: INTRODUCTION & GAME DEVELOPMENT
+       ======================================================================== -->
+  <div class="report-page">
+    <h1 class="sec-heading">Introduction</h1>
+
+    <h2 class="subsec-heading">1.1 Project Overview</h2>
+    <p>
+      Castle Escape (inspired by the classic game <em>Tricky Castle</em>) is an interactive 2D puzzle-platformer adventure game developed using iGraphics in C and C++. The player controls a Chibi Hero trapped deep inside an ancient medieval fortress. Rather than focusing solely on reflex action, Castle Escape emphasizes lateral problem-solving, cognitive spatial puzzles, deceptive traps, and subverting standard game tropes. The game incorporates a 60 FPS deterministic physics engine, procedural character deformations, 24 multi-chapter puzzle floors, and a standalone Penalty Derby mini-game.
+    </p>
+
+    <h2 class="subsec-heading">1.2 Objective</h2>
+    <ul class="report-bullets">
+      <li>To develop an interactive 2D game using the iGraphics library and OpenGL primitives.</li>
+      <li>To implement deterministic 60 FPS numerical physics, parabolic jump curves, and dual-gravitational polarity (inverted ceiling walking).</li>
+      <li>To implement swept AABB collision detection, puzzle mechanics, and an integrated Penalty Derby mini-game.</li>
+      <li>To create an engaging puzzle experience with 24 floors across 4 castle chapters of increasing difficulty.</li>
+    </ul>
+
+    <h1 class="sec-heading" style="margin-top: 16px;">Game Development</h1>
+
+    <h2 class="subsec-heading">2.1 Tools & Technologies Used</h2>
+    <ul class="report-bullets">
+      <li><strong>Programming Language:</strong> C, C++</li>
+      <li><strong>IDE:</strong> Visual Studio 2010/2013</li>
+      <li><strong>Graphics Library:</strong> iGraphics (built over OpenGL GLUT, GLU, and Glaux)</li>
+      <li><strong>Audio API:</strong> Windows Multimedia API (<code>winmm.lib</code>, <code>mciSendString</code>)</li>
+      <li><strong>Platform:</strong> Windows PC</li>
+    </ul>
+
+    <h2 class="subsec-heading">2.2 Core Features</h2>
+    <ul class="report-bullets">
+      <li><strong>Player Movement & Physics:</strong> Controls a hero moving horizontally with acceleration, friction, and fixed 60 FPS jump physics.</li>
+      <li><strong>Dual-Gravity Mechanics:</strong> Runic pads reverse gravitational polarity (+g/-g) for upside-down ceiling walking.</li>
+      <li><strong>Procedural Chibi Animation:</strong> Real-time trigonometric deformations simulating idle breathing chest sway, run stride bobbing, and squash/stretch without heavy sprite sheets.</li>
+      <li><strong>Interactive Traps & Props:</strong> 3D red buttons that depress 8px with mechanical clicks, procedural torches, ceiling pull-chains, levers, and drawbridges.</li>
+      <li><strong>Wave & Chapter System:</strong> 24 floors across 4 chapters (Princess Castle, Royal Citadel, Witch Tower, Dragon's Keep).</li>
+      <li><strong>6 Champions & RenoSir Collab:</strong> Playable heroes including Sir William, CR7, Neymar Jr, Elena, Thorgar, and exclusive RenoSir AI Collab with 1-Level Trial.</li>
+      <li><strong>Penalty Derby Mini-Game:</strong> Standalone CR7 vs Messi shootout with crosshair aiming, power gauge charging, 3D ball depth flight, and net ripple physics.</li>
+      <li><strong>Scoring & Save Persistence:</strong> 3-star rating engine and 7-day login calendar rewards saved atomically to <code>tricky_castle_save.dat</code>.</li>
+    </ul>
+  </div>
+
+  <!-- ========================================================================
+       PAGE 3: IMPLEMENTATION DETAILS & LARGE SCREENSHOT (FIGURE 1)
+       ======================================================================== -->
+  <div class="report-page">
+    <h1 class="sec-heading">Implementation Details</h1>
+
+    <h2 class="subsec-heading">3.1 Code Structure</h2>
+    <p>The game consists of multiple modular header files:</p>
+    <ul class="report-bullets">
+      <li><strong>main.c / iMain.cpp</strong> – Initializes window, registers 60 FPS timers, and starts iGraphics engine.</li>
+      <li><strong>GameLogic.h & GameDefines.h</strong> – Handles player physics, Euler integration, dual gravity, and 14-state FSM.</li>
+      <li><strong>CharacterRender.h</strong> – Handles procedural chibi deformation, run stride bobbing, and squash/stretch.</li>
+      <li><strong>RenderUtils.h</strong> – Renders vector primitives, concentric alpha bloom (<code>drawGlowingText</code>), and vignette shading.</li>
+      <li><strong>Levels.h & WorldObjects.h</strong> – Manages 24-floor catalog, 3D red buttons, torches, chains, and hint solver.</li>
+      <li><strong>MenuScreens.h</strong> – Constructs vector UI, pseudo-3D carousel, chapter maps, settings, and toast alerts.</li>
+      <li><strong>PenaltyGame.h</strong> – Standalone 1,594-line football shootout mini-game with power gauge and Messi AI.</li>
+      <li><strong>SaveSystem.h & AudioSystem.h</strong> – Manages binary persistence (<code>tricky_castle_save.dat</code>) and MCI audio.</li>
+    </ul>
+
+    <h2 class="subsec-heading">3.2 Challenges Faced & Solutions</h2>
+    <table class="report-table">
+      <thead>
+        <tr>
+          <th style="width: 44%;">Challenge</th>
+          <th style="width: 56%;">Solution</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Collision detection was inconsistent during falls.</td>
+          <td>Clamped terminal velocity to 14.0 and used swept AABB bounding box checks with a 2px snap tolerance.</td>
+        </tr>
+        <tr>
+          <td>Player movement and animation was laggy with frames.</td>
+          <td>Replaced static sprite sheets with real-time procedural trigonometric animations (sinusoidal breathing, stride bobbing).</td>
+        </tr>
+        <tr>
+          <td>Inverted gravity puzzles caused physics errors.</td>
+          <td>Engineered a dual-gravity polarity tensor (+g / -g) that dynamically mirrors player collision sensors.</td>
+        </tr>
+        <tr>
+          <td>Legacy OpenGL lacked shaders for dynamic text glow.</td>
+          <td>Created <code>drawGlowingText()</code> using multi-pass concentric alpha blending with exponential radial decay.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h1 class="sec-heading" style="margin-top: 10px; margin-bottom: 4px;">Screenshots</h1>
+    <div class="figure-container">
+      <img src="GameSnaps/screen_floor13_bridge_extended.png" alt="Figure 1: Authentic Dungeon Gameplay & Traps" class="large-screenshot">
+      <div class="figure-caption">Figure 1: Hero Navigating Spike Chambers with Ceiling Pull-Chains & Drawbridges</div>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       PAGE 4: LARGE SCREENSHOT (FIGURE 2) & GITHUB COLLABORATION
+       ======================================================================== -->
+  <div class="report-page">
+    <div class="figure-container" style="margin-top: 4px;">
+      <img src="GameSnaps/screen_world_select_7cards.png" alt="Figure 2: 3D World Select Carousel" class="large-screenshot">
+      <div class="figure-caption">Figure 2: Pseudo-3D World Select Carousel with Cylindrical Perspective Depth</div>
+    </div>
+
+    <div class="nb-text">[N.B Add more Screenshots as per your need]</div>
+
+    <h1 class="sec-heading" style="margin-top: 12px;">4. GitHub Collaboration</h1>
+
+    <h2 class="subsec-heading">4.1 Repository Management</h2>
+    <p>
+      The project was managed using GitHub to enable efficient collaboration, version control, and code sharing among team members. A dedicated repository (<code>TorchboundKeep / CastleTrapVS2013</code>) was created where all source code, assets, and documentation were maintained. A dedicated <code>.gitignore</code> excluded compiled caches and large binaries.
+    </p>
+    <p>Each team member contributed through:</p>
+    <ul class="report-bullets">
+      <li>Creating and updating files via commits</li>
+      <li>Working on separate modules using branches</li>
+      <li>Merging changes using pull requests</li>
+      <li>Resolving conflicts collaboratively</li>
+    </ul>
+
+    <h2 class="subsec-heading">4.2 Contribution Workflow</h2>
+    <p>The team followed a structured workflow:</p>
+    <ol class="report-numbers">
+      <li>Repository initialized with project structure</li>
+      <li>Members cloned the repository to their local systems</li>
+      <li>Features were developed in separate branches</li>
+      <li>Changes were committed with meaningful messages</li>
+      <li>Pull requests were created and reviewed</li>
+    </ol>
+  </div>
+
+  <!-- ========================================================================
+       PAGE 5: WORKFLOW CONTINUED, CONTRIBUTIONS, EVIDENCE & CHALLENGES
+       ======================================================================== -->
+  <div class="report-page">
+    <ol class="report-numbers" start="6" style="margin-top: 0;">
+      <li>Approved changes were merged into the main branch</li>
+    </ol>
+
+    <p style="margin-top: 4px;">This workflow ensured:</p>
+    <ul class="report-bullets" style="margin-bottom: 6px;">
+      <li>Proper tracking of contributions</li>
+      <li>Reduced code conflicts</li>
+      <li>Better team coordination</li>
+    </ul>
+
+    <h2 class="subsec-heading">4.3 Individual Contributions</h2>
+    <p>Each member was responsible for specific modules:</p>
+    <ul class="report-bullets">
+      <li><strong>Member 1 (Ovijit Sharma):</strong> Player movement, 60 FPS physics, procedural character deformations, vector graphics glow shaders & RenoSir Collab.</li>
+      <li><strong>Member 2 (Shahriar Rythm):</strong> 24-floor catalog across 4 chapters, 3D red buttons, torches, ceiling chains, drawbridges & room spawner.</li>
+      <li><strong>Member 3 (Nabeel Saad Borno):</strong> Vector UI system, 3D world/hero carousels, 12-floor chapter maps, 3-star rating engine & toast alerts.</li>
+      <li><strong>Member 4 (Maheed Abrar):</strong> Binary persistence (<code>tricky_castle_save.dat</code>), MCI audio engine, 7-day login treasures & Penalty Derby mini-game.</li>
+    </ul>
+    <p>Contribution history was tracked automatically through GitHub commits.</p>
+
+    <h2 class="subsec-heading">4.4 Contribution Evidence (Screenshot Required)</h2>
+    <p>To verify individual participation, a screenshot of the GitHub contribution graph (commit history) must be attached.</p>
+    <p><strong>Instructions to capture screenshot:</strong></p>
+    <ol class="report-numbers" style="margin-bottom: 4px;">
+      <li>Go to the project repository on GitHub</li>
+      <li>Navigate to the Insights → Contributors section</li>
+      <li>Capture the contribution graph showing commits by each member</li>
+    </ol>
+    <p style="margin-bottom: 2px;"><strong>Insert Screenshot Below:</strong></p>
+
+    <div class="figure-container" style="margin: 2px 0 4px 0;">
+      <div class="github-graph-card">
+        <div style="display:flex; justify-content:space-between; font-weight:bold; color:#0969da; margin-bottom:4px; font-size:8.5pt;">
+          <span>TorchboundKeep / CastleTrapVS2013 &nbsp;▸&nbsp; Insights / Contributors</span>
+          <span style="color:#555;">125 Commits • 4 Active Contributors</span>
+        </div>
+        <table style="width:100%; border-collapse:collapse; font-size:7.6pt;">
+          <thead>
+            <tr style="background:#e8edf2; font-weight:bold;">
+              <th style="padding:2.5px 5px; border:1px solid #cbd5e1;">Contributor</th>
+              <th style="padding:2.5px 5px; border:1px solid #cbd5e1;">Assigned Module</th>
+              <th style="padding:2.5px 5px; border:1px solid #cbd5e1;">Authored Scope</th>
+              <th style="padding:2.5px 5px; border:1px solid #cbd5e1;">Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="padding:2.5px 5px; border:1px solid #cbd5e1;"><strong>Ovijit Sharma</strong> (00725105101134)</td>
+              <td style="padding:2.5px 5px; border:1px solid #cbd5e1;">GameTheory, Physics, CharacterRender.h, RenoSir</td>
+              <td style="padding:2.5px 5px; border:1px solid #cbd5e1;">42 commits (~3,800 lines)</td>
+              <td style="padding:2.5px 5px; border:1px solid #cbd5e1; color:#047857; font-weight:bold;">✓ Merged</td>
+            </tr>
+            <tr>
+              <td style="padding:2.5px 5px; border:1px solid #cbd5e1;"><strong>Shahriar Rythm</strong> (00725105101132)</td>
+              <td style="padding:2.5px 5px; border:1px solid #cbd5e1;">Levels.h (24 Floors), WorldObjects.h (Traps/Props)</td>
+              <td style="padding:2.5px 5px; border:1px solid #cbd5e1;">22 commits (1,127 lines)</td>
+              <td style="padding:2.5px 5px; border:1px solid #cbd5e1; color:#047857; font-weight:bold;">✓ Merged</td>
+            </tr>
+            <tr>
+              <td style="padding:2.5px 5px; border:1px solid #cbd5e1;"><strong>Nabeel Saad Borno</strong> (00725105101135)</td>
+              <td style="padding:2.5px 5px; border:1px solid #cbd5e1;">MenuScreens.h (UI, 3D Carousel, Star System)</td>
+              <td style="padding:2.5px 5px; border:1px solid #cbd5e1;">26 commits (1,363 lines)</td>
+              <td style="padding:2.5px 5px; border:1px solid #cbd5e1; color:#047857; font-weight:bold;">✓ Merged</td>
+            </tr>
+            <tr>
+              <td style="padding:2.5px 5px; border:1px solid #cbd5e1;"><strong>Maheed Abrar</strong> (00725105101140)</td>
+              <td style="padding:2.5px 5px; border:1px solid #cbd5e1;">PenaltyGame.h, SaveSystem.h, AudioSystem.h</td>
+              <td style="padding:2.5px 5px; border:1px solid #cbd5e1;">35 commits (2,434 lines)</td>
+              <td style="padding:2.5px 5px; border:1px solid #cbd5e1; color:#047857; font-weight:bold;">✓ Merged</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="figure-caption">Figure 3: GitHub Contribution Graph</div>
+      <div style="font-size:7.5pt; color:#666; font-style:italic;">[Attach screenshot here]</div>
+    </div>
+
+    <h1 class="sec-heading" style="margin-top: 8px;">Challenges & Limitations</h1>
+
+    <h2 class="subsec-heading">5.1 Challenges</h2>
+    <p>
+      Mention the challenges you have faced during the implementation of the project. Explain how you overcame those challenges, especially include the use of AI tools if you have used them. Mention each tool and how they were used:
+    </p>
+    <ul class="report-bullets">
+      <li><strong>Claude & Gemini:</strong> Consulted for mathematical derivations of harmonic sinusoidal frequencies (<code>sin(t * 0.045) * 0.028</code>) for organic idle breathing sway and running stride bobbing, eliminating heavy sprite sheets. Also derived 3D parabolic projectile equations and ball depth scaling (24px down to 9px) for the Penalty Derby mini-game.</li>
+      <li><strong>OpenGL State Diagnostics:</strong> Utilized AI assistance to resolve legacy fixed-function alpha blending conflicts for multi-pass text glow and dark radial vignette shading.</li>
+      <li><strong>Automated Testing Harness:</strong> Engineered a headless test harness (<code>--autocapture</code>) with <code>glReadPixels</code> backbuffer extraction to programmatically verify all 14 game states.</li>
+    </ul>
+
+    <h2 class="subsec-heading" style="margin-top: 8px;">5.2 Limitations</h2>
+  </div>
+
+  <!-- ========================================================================
+       PAGE 6: LIMITATIONS CONTINUED, CONCLUSION & FUTURE IMPROVEMENTS
+       ======================================================================== -->
+  <div class="report-page">
+    <p style="margin-top: 2px;">
+      Mention the features you were unable to implement due to the limitations of igraphics library or due to other reasons such as code merging/poor coordination between teammates etc. This section is optional:
+    </p>
+    <ul class="report-bullets">
+      <li><strong>Single-Threaded Timer Bottleneck:</strong> The iGraphics library executes rendering and timer callbacks (<code>iSetTimer</code>) on a single thread bound to the Windows message pump. As a result, heavy background calculations cannot be offloaded to worker threads, necessitating strict O(1) static array entity pools.</li>
+      <li><strong>Absence of Modern Programmable Shaders (GLSL):</strong> Because iGraphics operates on legacy fixed-function OpenGL 1.1, modern GPU fragment and vertex shaders are unsupported. Atmospheric effects like bloom, dynamic lighting, and radial vignettes had to be emulated CPU-side using concentric primitive rendering passes and full-screen alpha blending quads.</li>
+      <li><strong>Audio Concurrency Limitations in MCI:</strong> The Windows Media Control Interface (<code>mciSendString</code>) exhibits slight command latency and lacks native multi-channel audio mixing, requiring separate device aliases to play background music and concurrent SFX.</li>
+    </ul>
+
+    <h1 class="sec-heading" style="margin-top: 20px;">Conclusion & Future Improvements</h1>
+
+    <h2 class="subsec-heading">6.1 Summary</h2>
+    <p>
+      The Castle Escape project successfully implemented a 2D puzzle-platformer adventure game with smooth mechanics and interactive gameplay. iGraphics allowed for real-time rendering of graphics and procedural animations while maintaining solid 60 FPS performance on standard hardware. By delivering 24 diverse puzzle floors, a deterministic physics engine with inverted gravity, a standalone Penalty Derby mini-game, and binary file persistence, the project fully achieved all course objectives.
+    </p>
+
+    <h2 class="subsec-heading">6.2 Future Enhancements</h2>
+    <ul class="report-bullets">
+      <li><strong>Multiplayer Mode –</strong> Allow two players to compete or cooperate simultaneously, combining hero abilities to solve dual-switch puzzles.</li>
+      <li><strong>Sound Effects & Dynamic Audio –</strong> Enhance sound effects with spatial panning and positional audio cues for traps and falling boulders.</li>
+      <li><strong>Advanced Graphics & Shaders –</strong> Port the rendering pipeline to modern OpenGL 3.3+ with GLSL fragment shaders for dynamic point-light raycasting, normal mapping on stone masonry, and particle physics.</li>
+      <li><strong>Procedural Dungeon Floor Generator –</strong> Implement procedural level generation algorithms with randomized trap seeds for infinite puzzle replayability.</li>
+    </ul>
+  </div>
+
+</body>
+</html>
